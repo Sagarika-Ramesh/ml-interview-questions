@@ -43,7 +43,8 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
   Front: `<span class="fn">1.</span>` plus the question. Back: `<span class="bq">1. question</span>`
   plus the answer.
 - **Cheat sheet** (`#cheatsheet`), no box around it: `ol.steps` (5 key steps), a **mind map**
-  figure, and a **decision chart** figure. NO flash cards in the cheat sheet.
+  figure, and **one decision chart per mind-map branch** (e.g. data, loss, model, training, evaluation),
+  each a `figure.diagram.illus` under its own `h3` ("Decision chart: …"), built with `tools/figure_helpers.py`. NO flash cards in the cheat sheet.
 - `nav.pager` "← Back to all questions", a `footer`, then `<p class="signature">Sagarika</p>`.
 
 ## Visual rules
