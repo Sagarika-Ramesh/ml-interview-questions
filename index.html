@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robust Models &amp; Outliers</title>
+<meta name="description" content="Q&amp;A: how do you make machine learning models more robust to outliers?">
+<style>
+  :root {
+    --bg: #fbfaf7; --fg: #1d1d1f; --muted: #5f6368; --accent: #2457c5;
+    --card: #ffffff; --border: #e4e2dc; --code-bg: #f1efe9; --q-bg: #eef3fd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141517; --fg: #e8e8ea; --muted: #a0a4ab; --accent: #8ab0ff;
+      --card: #1c1d20; --border: #2e3035; --code-bg: #26282c; --q-bg: #1d2638;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--fg);
+    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  main { max-width: 760px; margin: 0 auto; padding: 48px 16px 80px; }
+  header .eyebrow { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
+  h1 { font-size: 2.1rem; line-height: 1.2; margin: .3em 0 .2em; }
+  header p { color: var(--muted); margin-top: 0; }
+  .question {
+    background: var(--q-bg); border-left: 4px solid var(--accent);
+    padding: 16px 20px; border-radius: 8px; margin: 32px 0;
+  }
+  .question .label, .answer-label { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
+  .question p { margin: 4px 0 0; font-size: 1.15rem; font-weight: 600; }
+  nav.toc { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; margin: 16px 0 8px; }
+  nav.toc ol { margin: 6px 0; padding-left: 20px; }
+  nav.toc a { color: var(--accent); text-decoration: none; }
+  nav.toc a:hover { text-decoration: underline; }
+  h2 { font-size: 1.35rem; margin-top: 2.2em; padding-top: .4em; border-top: 1px solid var(--border); }
+  ul, ol { padding-left: 22px; }
+  li { margin: 6px 0; }
+  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; font-size: .9em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .callout { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px 20px; margin-top: 16px; }
+  footer { margin-top: 56px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); padding-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">ML Q&amp;A</div>
+    <h1>Making models robust to outliers</h1>
+    <p>A practical guide covering data, loss functions, models, training and evaluation.</p>
+  </header>
+
+  <section class="question">
+    <div class="label">Question</div>
+    <p>How do you make models more robust to outliers?</p>
+  </section>
+
+  <div class="answer-label">Answer</div>
+  <p>There are four places to deal with outliers: the <strong>data</strong>, the <strong>loss function</strong>, the <strong>model</strong>, and the <strong>training process</strong>. Which one fits depends on whether your outliers are bad data (sensor glitches, typos, mislabels) or real rare events you still need to predict.</p>
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#data">Data: find them and handle them</a></li>
+      <li><a href="#loss">Loss function</a></li>
+      <li><a href="#model">Model choice</a></li>
+      <li><a href="#training">Training process</a></li>
+      <li><a href="#evaluation">Evaluation</a></li>
+      <li><a href="#default">A practical default</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="data">1. Data: find them and handle them</h2>
+  <ul>
+    <li><strong>Detect them:</strong> z-scores or IQR fences for a single feature. For several features at once, use Mahalanobis distance, Isolation Forest, Local Outlier Factor or One-Class SVM.</li>
+    <li><strong>Remove them:</strong> only when you're confident they're errors. Deleting real extremes hides risk.</li>
+    <li><strong>Clip them (winsorize):</strong> cap values at a percentile, for example the 1st and 99th.</li>
+    <li><strong>Transform skewed features:</strong> use log, Box-Cox or Yeo-Johnson. A heavy tail stops looking extreme after the transform.</li>
+    <li><strong>Scale robustly:</strong> use <code>RobustScaler</code> (median and IQR) instead of <code>StandardScaler</code>, because outliers distort the mean and standard deviation.</li>
+    <li><strong>Bin the feature or use rank/quantile transforms:</strong> then only the order of values matters, not their size.</li>
+  </ul>
+
+  <h2 id="loss">2. Loss function: often the biggest single improvement</h2>
+  <p>Squared error (MSE) penalizes errors quadratically, so a few outliers dominate training. Alternatives:</p>
+  <ul>
+    <li><strong>MAE / L1 loss:</strong> predicts the median, so it's robust, but its gradient isn't smooth at zero.</li>
+    <li><strong>Huber loss:</strong> quadratic for small errors and linear for large ones. It's the usual default. In PyTorch it's <code>nn.HuberLoss</code>; <code>SmoothL1Loss</code> is the same idea.</li>
+    <li><strong>Log-cosh:</strong> a smooth version of Huber.</li>
+    <li><strong>Quantile (pinball) loss:</strong> predicts a chosen quantile instead of the mean.</li>
+    <li><strong>Tukey's biweight / Cauchy loss:</strong> errors beyond a threshold barely move the fit. These are strongly robust but non-convex.</li>
+    <li><strong>For classification with noisy labels:</strong> generalized cross-entropy, symmetric cross-entropy, label smoothing, or focal loss used with care, since focal loss can also amplify mislabeled hard examples.</li>
+  </ul>
+
+  <h2 id="model">3. Model choice</h2>
+  <ul>
+    <li><strong>Tree-based models</strong> (random forests, gradient boosting) are largely unaffected by outliers in the input features, because they split on order. Outliers in the target still matter, so pair them with a robust loss: XGBoost and LightGBM support Huber and quantile objectives.</li>
+    <li><strong>Robust linear regression:</strong> <code>HuberRegressor</code>, <code>RANSACRegressor</code> and <code>TheilSenRegressor</code> in scikit-learn.</li>
+    <li><strong>Distance-based models</strong> (k-NN, SVM, k-means) are sensitive. Scale robustly first, or use k-medoids instead of k-means.</li>
+    <li><strong>Bayesian models:</strong> use a heavy-tailed likelihood such as Student-t instead of a Gaussian.</li>
+  </ul>
+
+  <h2 id="training">4. Training process</h2>
+  <ul>
+    <li><strong>Regularization</strong> (L1/L2, dropout) stops the model from bending to fit individual points.</li>
+    <li><strong>Gradient clipping</strong> keeps outlier batches from causing destabilizing updates in neural networks.</li>
+    <li><strong>Sample reweighting:</strong> down-weight high-loss points (iteratively reweighted least squares), or use small-loss selection such as co-teaching for noisy labels.</li>
+    <li><strong>Ensembling and bagging</strong> average out the influence of any single point.</li>
+    <li><strong>Early stopping:</strong> networks memorize noisy or outlier examples late in training.</li>
+  </ul>
+
+  <h2 id="evaluation">5. Evaluation</h2>
+  <ul>
+    <li>Report robust metrics (MAE, median absolute error) next to RMSE.</li>
+    <li>Look at how errors are spread across the data, not just the average. Inspect the worst residuals.</li>
+    <li>Check that your train/test split doesn't put all the outliers on one side.</li>
+  </ul>
+
+  <h2 id="default">A practical default</h2>
+  <div class="callout">
+    <ol>
+      <li>Plot the data and work out whether the outliers are errors or real events.</li>
+      <li>Fix or remove errors. Keep real extremes.</li>
+      <li>Use <code>RobustScaler</code> or a log transform on skewed features.</li>
+      <li>Train with Huber loss (or use gradient-boosted trees with a Huber objective).</li>
+      <li>Compare against your MSE baseline using MAE and a look at the residuals.</li>
+    </ol>
+  </div>
+
+  <footer>Published with GitHub Pages.</footer>
+</main>
+</body>
+</html>
