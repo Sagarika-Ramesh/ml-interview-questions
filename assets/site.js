@@ -39,3 +39,10 @@
     });
   });
 })();
+
+// Flash cards: click (or Enter/Space, since they're buttons) to flip
+document.querySelectorAll(".flash").forEach(function (card) {
+  card.addEventListener("click", function () {
+    card.setAttribute("aria-pressed", card.getAttribute("aria-pressed") === "true" ? "false" : "true");
+  });
+});

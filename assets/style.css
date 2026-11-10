@@ -244,3 +244,51 @@ footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--r
 .g3 .grid { stroke: #2a3a4a; stroke-width: 1; }
 .g3 .curve { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
 .g3 .m { font-style: italic; }
+
+/* ---------- Colour legend (top right) ---------- */
+.topbar { display: flex; justify-content: space-between; align-items: center; gap: 0.8rem 1.2rem; flex-wrap: wrap; padding-top: 2rem; }
+.topbar .crumbs { padding-top: 0; }
+.topbar-home { justify-content: flex-end; }
+.topbar-home + .hero { padding-top: 1.6rem; }
+.legend { list-style: none; margin: 0 0 0 auto; padding: 0.35rem 0.7rem; display: flex; gap: 0.9rem; align-items: center; font-family: var(--font-mono); font-size: 0.74rem; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; }
+.legend li { display: inline-flex; align-items: center; gap: 0.4rem; white-space: nowrap; }
+.legend .sw { width: 0.85rem; height: 0.85rem; border-radius: 3px; border: 2px solid; display: inline-block; }
+.sw-pink { border-color: var(--box-pink) !important; background: color-mix(in srgb, var(--box-pink) 15%, transparent); }
+.sw-yellow { border-color: var(--box-yellow) !important; background: color-mix(in srgb, var(--box-yellow) 15%, transparent); }
+.sw-blue { border-color: var(--box-blue) !important; background: color-mix(in srgb, var(--box-blue) 15%, transparent); }
+
+/* ---------- Follow-ups: no box, just dividers ---------- */
+.followup { border: 0; background: none; border-radius: 0; padding: 1.1rem 0 0; border-top: 1.5px dashed var(--rule); }
+.followup:first-of-type { border-top: 0; padding-top: 0.2rem; }
+
+/* ---------- Cheat sheet ---------- */
+#cheatsheet h3 { margin-top: 1.2rem; font-size: 1.3rem; }
+.hint { color: var(--muted); font-size: 0.95rem; margin-top: -0.6rem; }
+.diagram.illus figcaption em { font-style: normal; color: #ff6b5e; }
+
+/* Key steps: a numbered chain */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.6rem; counter-reset: none; }
+.steps li { position: relative; display: grid; gap: 0.15rem; align-content: start; padding-top: 0.2rem; font-size: 0.95rem; line-height: 1.4; }
+.steps li:not(:last-child)::after { content: ""; position: absolute; top: 1.25rem; left: 2.9rem; right: -0.4rem; border-top: 2.5px dashed color-mix(in srgb, var(--accent) 55%, transparent); }
+.steps .sn { width: 2.5rem; height: 2.5rem; border-radius: 50%; display: grid; place-items: center; font-family: var(--font-display); font-weight: 800; font-size: 1.2rem; background: var(--accent); color: var(--bg); margin-bottom: 0.35rem; position: relative; z-index: 1; }
+.steps b { font-family: var(--font-display); font-weight: 800; font-size: 1.02rem; }
+.steps span:last-child { color: var(--muted); }
+@media (max-width: 640px) {
+  .steps { grid-template-columns: 1fr; gap: 0.9rem; }
+  .steps li { grid-template-columns: 2.5rem 1fr; column-gap: 0.8rem; }
+  .steps .sn { grid-row: span 2; margin: 0; }
+  .steps li:not(:last-child)::after { top: 2.7rem; bottom: -0.9rem; left: 1.25rem; right: auto; border-top: 0; border-left: 2.5px dashed color-mix(in srgb, var(--accent) 55%, transparent); }
+}
+
+/* Flash cards that flip */
+.flashes { display: grid; grid-template-columns: repeat(auto-fill, minmax(13.5rem, 1fr)); gap: 0.9rem; }
+.flash { all: unset; box-sizing: border-box; cursor: pointer; position: relative; height: 9.5rem; perspective: 900px; border-radius: 14px; }
+.flash:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+.flash .face { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; padding: 1rem; border-radius: 14px; backface-visibility: hidden; -webkit-backface-visibility: hidden; font-size: 0.98rem; line-height: 1.4; transition: transform 0.45s ease; }
+.flash .front { background: #f3ecdc; color: #22252e; font-family: var(--font-display); font-weight: 700; font-size: 1.02rem; border: 3px solid #22252e; box-shadow: 0 5px 0 rgba(0,0,0,0.25); }
+.flash .front::after { content: "tap to flip ↻"; position: absolute; bottom: 0.5rem; right: 0.75rem; font-family: var(--font-mono); font-weight: 400; font-size: 0.68rem; color: #7a776e; }
+.flash .back { background: #22252e; color: #f3ecdc; border: 3px solid var(--accent); transform: rotateY(180deg); }
+.flash .back code { background: #2d313c; color: #f3ecdc; border-color: #454a57; }
+.flash[aria-pressed="true"] .front { transform: rotateY(-180deg); }
+.flash[aria-pressed="true"] .back { transform: rotateY(0deg); }
+@media (prefers-reduced-motion: reduce) { .flash .face { transition: none; } }
