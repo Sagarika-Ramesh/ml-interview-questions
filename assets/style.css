@@ -361,3 +361,8 @@ html[data-theme="light"] .flash-wide .front::after { background-image: linear-gr
   @keyframes radiant { from { background-position: 0% 50%; } to { background-position: 250% 50%; } }
   @keyframes glowpulse { 0%, 100% { opacity: 0.85; } 50% { opacity: 1; } }
 }
+
+/* Signature */
+.signature { font-family: "Great Vibes", "Snell Roundhand", cursive; font-size: 2.6rem; line-height: 1; text-align: right; margin: 1.2rem 0 0; color: #e9e9ec; text-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
+html[data-theme="light"] .signature { color: #8a8f99; text-shadow: none; }
+@media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .signature { color: #8a8f99; text-shadow: none; } }
