@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="How do you make a model more robust to outliers? An illustrated interview answer with diagrams, code and follow-ups.">
+<title>Robustness to Outliers · ML Interview Prep</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="../../assets/style.css">
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M1,1 L9,5 L1,9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+</svg>
+
+<main>
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="../../">← All questions</a><span aria-hidden="true">/</span><span>Question 1</span></nav>
+
+  <!-- ============ QUESTION 1 ============ -->
+  <header class="qcard" id="q1">
+    <div class="qcard-inner">
+      <div class="qnum">Question 1 <span class="chip">Robustness</span><span class="chip">Very common</span></div>
+      <h1 class="qtitle">How do you make a model more robust to <span class="squiggle">outliers</span>?</h1>
+      <div class="short">
+        <span class="label">The 30-second answer</span>
+        <p>First I'd find out whether the outliers are <strong>errors</strong> or <strong>real rare events</strong>. I'd fix or drop errors and keep real extremes. Then I'd limit how much any single point can pull the model: transform or clip skewed features, scale with the median and IQR, and swap MSE for <strong>Huber</strong> or MAE loss. Tree-based models help with odd feature values. Finally I'd evaluate with MAE as well as RMSE and look at the worst residuals.</p>
+      </div>
+    </div>
+  </header>
+
+  <ul class="toc toc-q" aria-label="Sections">
+    <li><a href="#first">Error or real?</a></li>
+    <li><a href="#data">Data</a></li>
+    <li><a href="#loss">Loss functions</a></li>
+    <li><a href="#models">Models</a></li>
+    <li><a href="#training">Training</a></li>
+    <li><a href="#evaluation">Evaluation</a></li>
+    <li><a href="#followups">Follow-ups</a></li>
+    <li><a href="#cheatsheet">Cheat sheet</a></li>
+  </ul>
+
+  <!-- ============ ERROR OR REAL ============ -->
+  <section id="first">
+    <div class="kicker">Start here</div>
+    <h2>First question: error, or a real rare event?</h2>
+    <p>"Outlier" covers two very different things, and the right fix depends on which one you have. A sensor reading of −999 is an error. A $40,000 purchase in a fraud dataset is probably the most important row you have.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 300" role="img" aria-label="Decision diagram. An outlier is either a data error, such as a typo, sensor glitch or mislabel, which you fix or remove, or a real rare event, which you keep and handle with robust losses, transforms or models, or by modelling it on purpose.">
+          <g class="rough">
+            <rect class="box f-amber" x="270" y="20" width="200" height="60" rx="12"/>
+            <rect class="box f-redsoft" x="40" y="150" width="290" height="120" rx="12"/>
+            <rect class="box f-green" x="410" y="150" width="290" height="120" rx="12"/>
+            <path class="ink" d="M320,82 C290,110 220,120 190,146" marker-end="url(#arrow)"/>
+            <path class="ink" d="M420,82 C450,110 520,120 550,146" marker-end="url(#arrow)"/>
+          </g>
+          <text class="t-big" x="370" y="57" text-anchor="middle">an outlier!</text>
+          <text class="t-mid" x="205" y="118" text-anchor="middle">it's wrong</text>
+          <text class="t-mid" x="535" y="118" text-anchor="middle">it's real</text>
+          <text class="t-big t-red" x="185" y="182" text-anchor="middle">Data error</text>
+          <text class="t-small" x="185" y="206" text-anchor="middle">typo, unit mix-up, sensor glitch,</text>
+          <text class="t-small" x="185" y="226" text-anchor="middle">mislabel, -999 meaning "missing"</text>
+          <text class="t-mid t-red" x="185" y="254" text-anchor="middle">→ fix it or remove it</text>
+          <text class="t-big t-green" x="555" y="182" text-anchor="middle">Real rare event</text>
+          <text class="t-small" x="555" y="206" text-anchor="middle">fraud, a viral post, a whale customer,</text>
+          <text class="t-small" x="555" y="226" text-anchor="middle">a market crash</text>
+          <text class="t-mid t-green" x="555" y="254" text-anchor="middle">→ keep it, limit its pull</text>
+        </svg>
+      </div>
+      <figcaption>Deleting a real extreme doesn't remove the risk. It just hides it from the model.</figcaption>
+    </figure>
+
+    <div class="callout"><span class="hand" aria-hidden="true">👉</span><p>Sometimes the outliers <em>are</em> the task. In fraud or anomaly detection you don't make the model ignore them. You model them directly, for example with Isolation Forest or class weighting.</p></div>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section id="data">
+    <div class="kicker">Layer 1 · the data</div>
+    <h2>Find them, then decide what to do</h2>
+    <p>For a single feature, simple rules work. When a point is only odd as a <em>combination</em> of features (a 1.9 m tall person weighing 40 kg), you need a multivariate method.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Looks at</th><th>Good to know</th></tr></thead>
+        <tbody>
+          <tr><td class="name">IQR fences</td><td><span class="pill yes">1 feature</span></td><td>Flags points beyond Q1 − 1.5·IQR or Q3 + 1.5·IQR. No normality assumption.</td></tr>
+          <tr><td class="name">z-score</td><td><span class="pill yes">1 feature</span></td><td>|z| &gt; 3 is common, but the mean and std are pulled by the very outliers you're hunting. The modified z-score uses the median and MAD instead.</td></tr>
+          <tr><td class="name">Mahalanobis</td><td><span class="pill unk">many</span></td><td>Distance that accounts for correlation. Assumes a roughly elliptical shape.</td></tr>
+          <tr><td class="name">Isolation Forest</td><td><span class="pill unk">many</span></td><td>Random splits isolate outliers in fewer steps. Fast and works on high-dimensional tabular data.</td></tr>
+          <tr><td class="name">LOF</td><td><span class="pill unk">many</span></td><td>Compares local density with the neighbours'. Catches points that are odd only within their own cluster.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Then handle them</h3>
+    <ul class="plain">
+      <li><strong>Remove</strong> only when you're confident it's an error, and record how many rows you dropped.</li>
+      <li><strong>Clip (winsorize)</strong> to, say, the 1st and 99th percentiles. You keep the row but cap its pull.</li>
+      <li><strong>Transform</strong> skewed features with log, Box-Cox or Yeo-Johnson. After the transform, a heavy tail stops looking extreme.</li>
+      <li><strong>Scale robustly</strong> with <code>RobustScaler</code> (median and IQR) instead of <code>StandardScaler</code> (mean and std).</li>
+      <li><strong>Rank or bin</strong> with <code>QuantileTransformer</code>, so only the order of values matters.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Pattern</span><span class="label">clip, log, robust-scale inside a pipeline</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">import numpy as np
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import FunctionTransformer, RobustScaler
+
+# Learn clip bounds on the training data only, then apply them everywhere
+lo, hi = np.percentile(X_train, [1, 99], axis=0)
+
+prep = make_pipeline(
+    FunctionTransformer(lambda X: np.clip(X, lo, hi)),
+    FunctionTransformer(np.log1p),   # only for non-negative, right-skewed features
+    RobustScaler(),                  # centres on the median, scales by the IQR
+)</code></pre>
+    </div></figure>
+
+    <div class="callout"><span class="hand" aria-hidden="true">⚠️</span><p>Compute percentiles and scalers on the <strong>training set only</strong>. Fitting them on all the data leaks test-set information into training.</p></div>
+  </section>
+
+  <!-- ============ LOSS ============ -->
+  <section id="loss">
+    <div class="kicker">Layer 2 · the loss function</div>
+    <h2>Stop squaring big errors</h2>
+    <p>This is often the single biggest improvement. MSE squares each error, so one point that's 10 units off counts as much as 100 points that are 1 unit off. The model bends toward that one point.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 310" role="img" aria-label="Scatter plot of ten points along a rising trend, with one outlier far below on the right. The least squares line is pulled down and flattened by the outlier. The Huber regression line passes through the main cloud of points.">
+          <g class="rough">
+            <path class="ink" d="M60,270 H700 M60,270 V30"/>
+            <path class="ink thick s-red" d="M80,214 L690,150"/>
+            <path class="ink thick s-green" d="M80,236 L690,90"/>
+            <path class="ink dash s-red" d="M640,240 C620,220 610,200 615,170" marker-end="url(#arrow)"/>
+          </g>
+          <circle class="dot" cx="110" cy="226" r="7"/>
+          <circle class="dot" cx="165" cy="218" r="7"/>
+          <circle class="dot" cx="220" cy="200" r="7"/>
+          <circle class="dot" cx="275" cy="192" r="7"/>
+          <circle class="dot" cx="330" cy="170" r="7"/>
+          <circle class="dot" cx="385" cy="164" r="7"/>
+          <circle class="dot" cx="440" cy="146" r="7"/>
+          <circle class="dot" cx="495" cy="136" r="7"/>
+          <circle class="dot" cx="550" cy="118" r="7"/>
+          <circle class="dot" cx="605" cy="112" r="7"/>
+          <circle cx="650" cy="252" r="9" fill="var(--d-red)" stroke="var(--d-ink)" stroke-width="1.5"/>
+          <text class="t-mid t-red" x="520" y="290">one bad point</text>
+          <text class="t-mid t-red" x="420" y="205">MSE line: dragged down</text>
+          <text class="t-mid t-green" x="380" y="110">Huber line: follows the data</text>
+          <text class="t-small" x="70" y="48" fill-opacity="0.7">y</text>
+          <text class="t-small" x="690" y="292" fill-opacity="0.7">x</text>
+        </svg>
+      </div>
+      <figcaption>One point, squared, outvotes the other ten.</figcaption>
+    </figure>
+
+    <p>Robust losses grow more slowly for large errors, so a far-off point still counts, just not quadratically.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 318" role="img" aria-label="Three loss curves plotted against the residual. MSE is a steep parabola. MAE is a V shape. Huber is quadratic between minus delta and plus delta and grows linearly beyond them.">
+          <g class="rough">
+            <path class="ink" d="M50,250 H690 M370,262 V30"/>
+            <path class="ink dash" d="M270,250 V40 M470,250 V40" stroke-opacity="0.45"/>
+            <path class="ink thick s-red" d="M170,50 Q370,450 570,50"/>
+            <path class="ink thick s-blue" d="M70,100 L370,250 L670,100"/>
+            <path class="ink thick s-green" d="M120,50 L270,200 Q370,300 470,200 L620,50"/>
+          </g>
+          <text class="t-small" x="270" y="34" text-anchor="middle">−δ</text>
+          <text class="t-small" x="470" y="34" text-anchor="middle">+δ</text>
+          <text class="t-small" x="370" y="274" text-anchor="middle" fill-opacity="0.75">Huber: quadratic inside ±δ, linear outside</text>
+          <path class="ink thick s-red" d="M130,300 H160"/><text class="t-mid t-red" x="168" y="305">MSE · grows like r²</text>
+          <path class="ink thick s-blue" d="M330,300 H360"/><text class="t-mid t-blue" x="368" y="305">MAE · grows like |r|</text>
+          <path class="ink thick s-green" d="M530,300 H560"/><text class="t-mid t-green" x="568" y="305">Huber</text>
+          <text class="t-small" x="676" y="270" fill-opacity="0.7">residual r</text>
+          <text class="t-small" x="380" y="44" fill-opacity="0.7">loss</text>
+        </svg>
+      </div>
+      <figcaption>Huber behaves like MSE for small errors and like MAE for big ones.</figcaption>
+    </figure>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Loss</th><th>Robust?</th><th>Trade-off</th></tr></thead>
+        <tbody>
+          <tr><td class="name">MSE / L2</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
+          <tr><td class="name">MAE / L1</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
+          <tr><td class="name">Huber</td><td><span class="pill yes">yes</span></td><td>The usual default. You choose δ, the point where quadratic switches to linear.</td></tr>
+          <tr><td class="name">Log-cosh</td><td><span class="pill yes">yes</span></td><td>A smooth Huber with no δ to tune, which suits second-order optimisers.</td></tr>
+          <tr><td class="name">Quantile</td><td><span class="pill yes">yes</span></td><td>Predicts a chosen quantile, which is handy for prediction intervals.</td></tr>
+          <tr><td class="name">Tukey / Cauchy</td><td><span class="pill unk">very</span></td><td>Large errors barely count at all. Non-convex, so start from a good initial fit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag bad">Trap</span><span class="label">default regressors minimise squared error</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">from sklearn.linear_model import LinearRegression
+model = LinearRegression().fit(X, y)   # one bad y value can tilt the whole line</code></pre>
+    </div></figure>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Fix</span><span class="label">same model family, robust loss</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py"># scikit-learn
+from sklearn.linear_model import HuberRegressor
+model = HuberRegressor(epsilon=1.35).fit(X, y)   # 1.35 is the classic default
+
+# PyTorch
+import torch.nn as nn
+loss_fn = nn.HuberLoss(delta=1.0)                # instead of nn.MSELoss()
+
+# Gradient boosting
+import lightgbm as lgb
+model = lgb.LGBMRegressor(objective="huber", alpha=1.0)   # alpha is δ here</code></pre>
+    </div></figure>
+
+    <h3>Classification: outliers are usually wrong labels</h3>
+    <p>In classification, the outliers that hurt are usually <strong>mislabeled examples</strong>. Cross-entropy pushes hard to fit them. Options: label smoothing, generalized or symmetric cross-entropy, and small-loss selection methods such as co-teaching. Focal loss up-weights hard examples, so it can make label noise <em>worse</em>.</p>
+  </section>
+
+  <!-- ============ MODELS ============ -->
+  <section id="models">
+    <div class="kicker">Layer 3 · the model</div>
+    <h2>Some models barely notice outliers</h2>
+    <p>An important distinction: an outlier in the <strong>features (X)</strong> isn't the same as an outlier in the <strong>target (y)</strong>. Trees are robust to the first kind, but not automatically to the second.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Model</th><th>Outliers in X</th><th>Outliers in y</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Trees, RF, GBM</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td></tr>
+          <tr><td class="name">Linear / OLS</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td></tr>
+          <tr><td class="name">Huber / RANSAC / Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td></tr>
+          <tr><td class="name">k-NN, SVM, k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td></tr>
+          <tr><td class="name">Neural nets</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Unbounded activations plus MSE. Normalise the inputs and use a robust loss.</td></tr>
+          <tr><td class="name">Bayesian, Student-t</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TRAINING ============ -->
+  <section id="training">
+    <div class="kicker">Layer 4 · the training loop</div>
+    <h2>Don't let one batch steer the model</h2>
+    <ul class="plain">
+      <li><strong>Regularisation</strong> (L1/L2, dropout) stops the model bending to fit individual points.</li>
+      <li><strong>Gradient clipping</strong> caps the update size when an outlier-heavy batch produces a huge gradient.</li>
+      <li><strong>Sample reweighting</strong> down-weights high-loss points. Iteratively reweighted least squares (IRLS) does this for linear models.</li>
+      <li><strong>Bagging and ensembles</strong> average out the influence of any single point.</li>
+      <li><strong>Early stopping:</strong> networks fit clean patterns first and memorise noisy points late in training, so stopping early leaves the noise out.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag note">Note</span><span class="label">gradient clipping in PyTorch</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">loss.backward()
+torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+optimizer.step()</code></pre>
+    </div></figure>
+  </section>
+
+  <!-- ============ EVALUATION ============ -->
+  <section id="evaluation">
+    <div class="kicker">Layer 5 · how you measure it</div>
+    <h2>RMSE alone can mislead you</h2>
+    <p>RMSE is itself sensitive to outliers. A model can look worse on RMSE because of three rows while being better for 99% of users, or the other way round.</p>
+    <ul class="plain">
+      <li>Report <strong>MAE</strong> and <strong>median absolute error</strong> next to RMSE.</li>
+      <li>Sort by residual and <strong>look at the worst 20 rows</strong>. They often reveal a data bug.</li>
+      <li>Check whether the outliers all ended up in train or all in test. Stratify or split by time if needed.</li>
+      <li>If the extremes matter to the business, evaluate them as <strong>a separate slice</strong>.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Pattern</span><span class="label">compare a baseline with a robust model</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">from sklearn.metrics import mean_absolute_error, median_absolute_error, root_mean_squared_error
+
+for name, m in {"OLS": ols, "Huber": huber}.items():
+    p = m.predict(X_test)
+    print(f"{name:6s}  RMSE={root_mean_squared_error(y_test, p):.2f}  "
+          f"MAE={mean_absolute_error(y_test, p):.2f}  "
+          f"MedAE={median_absolute_error(y_test, p):.2f}")</code></pre>
+    </div></figure>
+  </section>
+
+  <!-- ============ FOLLOW-UPS ============ -->
+  <section id="followups">
+    <div class="kicker">Be ready for these</div>
+    <h2>Follow-ups interviewers ask</h2>
+
+    <div class="followup">
+      <h3><span class="n">1.</span>Why not just delete the outliers?</h3>
+      <p>Because they may be real, and then the model will be overconfident in production when the same kind of case shows up. Deleting them also shifts the data distribution, can quietly remove an important subgroup, and the deletion rule itself becomes a tuned hyperparameter. Delete errors and keep real events.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">2.</span>How do you choose δ for Huber loss?</h3>
+      <p>δ sets where an error stops counting as normal. A common rule is about 1.35 × the residual standard deviation, preferably estimated robustly with the MAD. That keeps about 95% of OLS efficiency when the data really is Gaussian. Otherwise, tune it by cross-validation on a robust metric.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">3.</span>Are tree models completely immune to outliers?</h3>
+      <p>No. They're robust to extreme <em>feature</em> values because splits only use the order. With squared loss, a leaf's prediction is still the mean of its targets, so an extreme y skews that leaf, and in boosting it creates large residuals that later trees chase. Use a Huber, MAE or quantile objective.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">4.</span>MAE is robust, so why isn't it always used?</h3>
+      <p>Its gradient has the same size whatever the error, so it doesn't slow down near the optimum and can oscillate. It isn't differentiable at zero, and it predicts the median, which is wrong if the business needs the mean (expected revenue, for example). Huber gives most of the robustness with smoother optimisation.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">5.</span>What's the difference between an outlier and a high-leverage point?</h3>
+      <p>An outlier has an unusual <strong>y</strong> given its x. A high-leverage point has an unusual <strong>x</strong>. A point is <em>influential</em> when removing it changes the fit a lot, which usually takes both. Cook's distance measures that influence.</p>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section id="cheatsheet">
+    <div class="kicker">Before the interview</div>
+    <h2>Cheat sheet</h2>
+    <div class="cheats">
+      <div class="cheat"><b>Diagnose first</b>Error → fix or drop. Real → keep and limit its pull.</div>
+      <div class="cheat"><b>Don't square big errors</b>Huber is the go-to swap for MSE. MAE if you want the median.</div>
+      <div class="cheat"><b>Scale with median and IQR</b><code>RobustScaler</code>, not <code>StandardScaler</code>. Log-transform skewed features.</div>
+      <div class="cheat"><b>Trees: X yes, y not by default</b>Robust to odd feature values. Give them a robust objective for odd targets.</div>
+      <div class="cheat"><b>Fit on train only</b>Clip bounds, scalers and outlier detectors learn from the training split.</div>
+      <div class="cheat"><b>Measure robustly</b>MAE and MedAE next to RMSE, then read the worst residuals.</div>
+    </div>
+  </section>
+
+  <nav class="pager" aria-label="More questions"><a href="../../">← Back to all questions</a></nav>
+
+  <footer>Code examples use Python with scikit-learn, PyTorch and LightGBM.</footer>
+</main>
+
+<script src="../../assets/site.js"></script>
+
+</body>
+</html>
