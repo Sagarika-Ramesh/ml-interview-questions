@@ -328,3 +328,41 @@ footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--r
 html[data-theme="light"] .flash-wide .front .fn, :root:not([data-theme="dark"]) .flash-wide .front .fn { filter: saturate(1.6) brightness(0.75); }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flash-wide .front .fn { filter: none; } }
 @media (max-width: 560px) { .flash-wide .front { padding: 1rem 1.1rem 2rem; } }
+
+/* Follow-up cards v3: one sticky-note yellow, slightly see-through; glowing "tap to flip" */
+.flash-wide, .flash-wide:nth-child(n) { --pastel: #ffe873; }
+html[data-theme="light"] .flash-wide, :root:not([data-theme="dark"]) .flash-wide { --pastel: #ffd84a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flash-wide { --pastel: #ffe873; } }
+.flash-wide .front { background: color-mix(in srgb, var(--pastel) 20%, transparent); border-color: color-mix(in srgb, var(--pastel) 65%, transparent); }
+.flash-wide .back { background: color-mix(in srgb, var(--pastel) 28%, transparent); border-color: color-mix(in srgb, var(--pastel) 80%, transparent); }
+.flash-wide .front .fn { color: var(--fg); filter: none !important; }
+
+.flash-wide .front::after {
+  content: "tap to flip ↻";
+  font-family: var(--font-display); font-weight: 800; font-size: 0.78rem; letter-spacing: 0.04em;
+  background: linear-gradient(90deg, #ffd84a, #ff8ec7, #b18cff, #6fd3ff, #ffd84a);
+  background-size: 250% 100%;
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 0 6px rgba(255, 170, 220, 0.55));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .flash-wide .front::after { animation: radiant 3.5s linear infinite; }
+  @keyframes radiant { from { background-position: 0% 50%; } to { background-position: 250% 50%; } }
+}
+/* stronger yellow on dark so it reads as a sticky note, deeper glow on light */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flash-wide .front { background: color-mix(in srgb, #fff07a 30%, transparent); } :root:not([data-theme="light"]) .flash-wide .back { background: color-mix(in srgb, #fff07a 38%, transparent); } }
+:root[data-theme="dark"] .flash-wide .front { background: color-mix(in srgb, #fff07a 30%, transparent); }
+:root[data-theme="dark"] .flash-wide .back { background: color-mix(in srgb, #fff07a 38%, transparent); }
+.flash-wide .front::after { font-size: 0.82rem; }
+html[data-theme="light"] .flash-wide .front::after, :root:not([data-theme="dark"]) .flash-wide .front::after { background-image: linear-gradient(90deg, #d99a00, #e0408f, #7c4dff, #1e88e5, #d99a00); filter: drop-shadow(0 0 5px rgba(224, 64, 143, 0.35)); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flash-wide .front::after { background-image: linear-gradient(90deg, #ffd84a, #ff8ec7, #b18cff, #6fd3ff, #ffd84a); filter: drop-shadow(0 0 6px rgba(255, 170, 220, 0.55)); } }
+/* v4: real sticky-note yellow, slightly see-through, dark ink text in both themes */
+.flash-wide .front, :root[data-theme="dark"] .flash-wide .front { background: rgba(255, 233, 112, 0.82) !important; border-color: rgba(214, 178, 30, 0.9) !important; color: #2b2611; }
+.flash-wide .back, :root[data-theme="dark"] .flash-wide .back { background: rgba(255, 238, 140, 0.9) !important; border-color: rgba(214, 178, 30, 0.95) !important; color: #2b2611; }
+html[data-theme="light"] .flash-wide .front, :root:not([data-theme="dark"]) .flash-wide .front { background: rgba(255, 226, 90, 0.55) !important; }
+html[data-theme="light"] .flash-wide .back, :root:not([data-theme="dark"]) .flash-wide .back { background: rgba(255, 230, 110, 0.7) !important; }
+.flash-wide .front .fn { color: #2b2611; }
+.flash-wide .back .bq { color: #6b5d22; }
+.flash-wide .back code { background: rgba(43, 38, 17, 0.1); color: #2b2611; border-color: rgba(43, 38, 17, 0.2); }
+.flash-wide .front::after, html[data-theme="light"] .flash-wide .front::after, :root:not([data-theme="dark"]) .flash-wide .front::after { background-image: linear-gradient(90deg, #c2410c, #db2777, #7c3aed, #2563eb, #c2410c) !important; filter: drop-shadow(0 0 5px rgba(219, 39, 119, 0.35)) !important; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .flash-wide .front { background: rgba(255, 233, 112, 0.82) !important; } :root:not([data-theme="light"]) .flash-wide .back { background: rgba(255, 238, 140, 0.9) !important; } :root:not([data-theme="light"]) .flash-wide .front::after { background-image: linear-gradient(90deg, #c2410c, #db2777, #7c3aed, #2563eb, #c2410c) !important; filter: drop-shadow(0 0 5px rgba(219, 39, 119, 0.35)) !important; } }
