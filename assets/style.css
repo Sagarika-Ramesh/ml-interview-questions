@@ -194,3 +194,53 @@ footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--r
 @media (prefers-reduced-motion: no-preference) {
   .qitem, .qitem .go, .pager a { transition: border-color 0.15s, transform 0.15s, color 0.15s; }
 }
+
+/* =====================================================================
+   Box system: pink = code, yellow = main content, blue = notes / asides.
+   Transparent fills, coloured outlines.
+   ===================================================================== */
+:root { --box-pink: #e0518f; --box-yellow: #b98a00; --box-blue: #2f7fd1; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --box-pink: #ff7eb6; --box-yellow: #f5d453; --box-blue: #6cb6ff; } }
+:root[data-theme="dark"] { --box-pink: #ff7eb6; --box-yellow: #f5d453; --box-blue: #6cb6ff; }
+
+/* Pink: code */
+.code { background: color-mix(in srgb, var(--box-pink) 7%, transparent); border: 2px solid var(--box-pink); border-radius: 16px; padding: 10px; }
+
+/* Yellow: main content boxes */
+.qcard { background: color-mix(in srgb, var(--box-yellow) 7%, transparent); border: 2px solid var(--box-yellow); padding: 10px; }
+.tbl-wrap, .followup, .cheat { border: 2px solid color-mix(in srgb, var(--box-yellow) 75%, transparent); background: color-mix(in srgb, var(--box-yellow) 4%, var(--card)); }
+.qitem { border: 2px solid color-mix(in srgb, var(--box-yellow) 75%, transparent); }
+.qitem::before { display: none; }
+.qitem:hover { border-color: var(--box-yellow); }
+
+/* Blue: notes and non-essential asides */
+.callout { background: color-mix(in srgb, var(--box-blue) 8%, transparent); border: 2px solid var(--box-blue); }
+.qsoon { border: 2px dashed color-mix(in srgb, var(--box-blue) 70%, transparent); }
+
+/* =====================================================================
+   Figures. Two kinds:
+   .illus  concept illustrations: slate panel, cream objects, ink chips
+   .graph  plots with axes and curves: 3Blue1Brown-style black panel
+   ===================================================================== */
+.diagram { background: none; padding: 0; border-radius: 0; display: grid; gap: 0.8rem; justify-items: center; }
+.diagram-inner { width: 100%; padding: 0.9rem; border-radius: 16px; }
+.diagram svg .rough { filter: none; }
+
+.diagram.illus .diagram-inner { background: #47577a; background-image: linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px); background-size: 100% 120px; }
+.diagram.illus figcaption { font-family: var(--font-display); font-weight: 800; font-size: 1.15rem; line-height: 1.3; color: #fff; background: #22252e; border-radius: 12px; padding: 0.6rem 1rem; text-align: center; max-width: 34rem; text-wrap: balance; box-shadow: 0 5px 0 rgba(0,0,0,0.25); }
+.diagram.illus figcaption em { font-style: normal; color: #ff6b5e; }
+.il text { font-family: var(--font-mono); fill: #22252e; }
+.il .lbl { font-size: 11px; fill: #7a776e; }
+.il .val { font-family: var(--font-display); font-weight: 800; font-size: 24px; fill: #22252e; }
+.il .chip-t { font-size: 12px; fill: #f3ecdc; }
+.il .tag-t { font-size: 12px; font-weight: 600; fill: #fff; letter-spacing: 0.04em; }
+.il .act-t { font-size: 13px; font-weight: 600; fill: #f3ecdc; }
+
+.diagram.graph .diagram-inner { background: #0c0c0e; border: 1px solid #1f1f24; }
+.diagram.graph figcaption { font-family: "STIX Two Text", var(--font-body); font-style: italic; font-size: 1.05rem; color: var(--muted); text-align: center; max-width: 36rem; text-wrap: balance; }
+.g3 text { font-family: "STIX Two Text", "Times New Roman", serif; fill: #e8e8e8; }
+.g3 .ax { stroke: #d6d6d6; stroke-width: 2; fill: none; }
+.g3 .tick { stroke: #d6d6d6; stroke-width: 1.5; }
+.g3 .grid { stroke: #2a3a4a; stroke-width: 1; }
+.g3 .curve { fill: none; stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
+.g3 .m { font-style: italic; }
