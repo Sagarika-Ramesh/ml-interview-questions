@@ -373,3 +373,11 @@ td.formula i { font-style: italic; }
 th i { font-family: "STIX Two Text", serif; text-transform: none; font-size: 1rem; }
 .tbl-note { font-size: 0.92rem; color: var(--muted); margin-top: -0.4rem; }
 .tbl-note i { font-family: "STIX Two Text", serif; }
+
+/* Symbol key under formula tables */
+.symbols { margin: -0.3rem 0 0; display: grid; gap: 0.3rem; font-size: 0.95rem; color: var(--muted); }
+.symbols div { display: grid; grid-template-columns: 3.4rem 1fr; gap: 0.6rem; align-items: baseline; }
+.symbols dt { font-family: "STIX Two Text", serif; font-size: 1.05rem; color: var(--fg); text-align: right; }
+.symbols dd { margin: 0; }
+.symbols i, td.formula sup i { font-family: "STIX Two Text", serif; }
+td.formula sup { font-size: 0.7em; }
