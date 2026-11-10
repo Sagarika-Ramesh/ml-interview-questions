@@ -366,3 +366,10 @@ html[data-theme="light"] .flash-wide .front::after { background-image: linear-gr
 .signature { font-family: "Great Vibes", "Snell Roundhand", cursive; font-size: 2.6rem; line-height: 1; text-align: right; margin: 1.2rem 0 0; color: #e9e9ec; text-shadow: 0 0 12px rgba(255, 255, 255, 0.15); }
 html[data-theme="light"] .signature { color: #8a8f99; text-shadow: none; }
 @media (prefers-color-scheme: light) { :root:not([data-theme="dark"]) .signature { color: #8a8f99; text-shadow: none; } }
+
+/* Formula column in tables */
+td.formula { font-family: "STIX Two Text", "Times New Roman", serif; font-size: 1.02rem; line-height: 1.5; white-space: nowrap; }
+td.formula i { font-style: italic; }
+th i { font-family: "STIX Two Text", serif; text-transform: none; font-size: 1rem; }
+.tbl-note { font-size: 0.92rem; color: var(--muted); margin-top: -0.4rem; }
+.tbl-note i { font-family: "STIX Two Text", serif; }

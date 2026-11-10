@@ -177,17 +177,18 @@ prep = make_pipeline(
 
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Loss</th><th>Robust?</th><th>Trade-off</th></tr></thead>
+        <thead><tr><th>Loss</th><th><i>L</i>(<i>r</i>)</th><th>Robust?</th><th>Trade-off</th></tr></thead>
         <tbody>
-          <tr><td class="name">Mean squared error (MSE), L2</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
-          <tr><td class="name">Mean absolute error (MAE), L1</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
-          <tr><td class="name">Huber</td><td><span class="pill yes">yes</span></td><td>The usual default. You choose δ, the point where quadratic switches to linear.</td></tr>
-          <tr><td class="name">Log-cosh</td><td><span class="pill yes">yes</span></td><td>A smooth Huber with no δ to tune, which suits second-order optimisers.</td></tr>
-          <tr><td class="name">Quantile</td><td><span class="pill yes">yes</span></td><td>Predicts a chosen quantile, which is handy for prediction intervals.</td></tr>
-          <tr><td class="name">Tukey / Cauchy</td><td><span class="pill unk">very</span></td><td>Large errors barely count at all. Non-convex, so start from a good initial fit.</td></tr>
+          <tr><td class="name">Mean squared error (MSE), L2</td><td class="formula"><i>r</i>²</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
+          <tr><td class="name">Mean absolute error (MAE), L1</td><td class="formula">|<i>r</i>|</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
+          <tr><td class="name">Huber</td><td class="formula">½<i>r</i>² &nbsp;if |<i>r</i>| ≤ <i>δ</i><br><i>δ</i>(|<i>r</i>| − ½<i>δ</i>) &nbsp;otherwise</td><td><span class="pill yes">yes</span></td><td>The usual default. You choose δ, the point where quadratic switches to linear.</td></tr>
+          <tr><td class="name">Log-cosh</td><td class="formula">log(cosh <i>r</i>)</td><td><span class="pill yes">yes</span></td><td>A smooth Huber with no δ to tune, which suits second-order optimisers.</td></tr>
+          <tr><td class="name">Quantile</td><td class="formula"><i>τ r</i> &nbsp;if <i>r</i> ≥ 0<br>(<i>τ</i> − 1) <i>r</i> &nbsp;if <i>r</i> &lt; 0</td><td><span class="pill yes">yes</span></td><td>Predicts a chosen quantile, which is handy for prediction intervals.</td></tr>
+          <tr><td class="name">Tukey / Cauchy</td><td class="formula">Tukey: (<i>c</i>²/6)[1 − (1 − (<i>r</i>/<i>c</i>)²)³]<br>&nbsp;&nbsp;if |<i>r</i>| ≤ <i>c</i>, else <i>c</i>²/6<br>Cauchy: (<i>c</i>²/2) log(1 + (<i>r</i>/<i>c</i>)²)</td><td><span class="pill unk">very</span></td><td>Large errors barely count at all. Non-convex, so start from a good initial fit.</td></tr>
         </tbody>
       </table>
     </div>
+    <p class="tbl-note"><i>r</i> = <i>y</i> − <i>ŷ</i> is the residual. <i>δ</i> (Huber) and <i>c</i> (Tukey, Cauchy) set where an error counts as large; <i>τ</i> is the target quantile, e.g. 0.9.</p>
 
     <figure class="code"><div class="code-inner">
       <div class="code-head"><span class="tag bad">Trap</span><span class="label">default regressors minimise squared error</span><button class="copy" type="button">copy</button></div>
