@@ -301,3 +301,12 @@ footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--r
 .flash .back b { color: var(--accent); }
 .flash .back { display: flex; align-items: center; justify-content: flex-start; }
 .flash .back .txt { display: block; }
+
+/* Follow-up questions as wide flip cards */
+.flashes-wide { grid-template-columns: 1fr; }
+.flash-wide .face { min-height: 7.5rem; }
+.flash-wide .front { justify-content: flex-start; display: flex; align-items: center; text-align: left; font-size: 1.12rem; padding-right: 7rem; }
+.flash-wide .front .fn { font-family: var(--font-hand); font-weight: 700; color: var(--accent-strong, #6b47a3); font-size: 1.5rem; margin-right: 0.75rem; }
+.flash-wide .back { font-size: 1rem; padding: 1.1rem 1.3rem; }
+@media (max-width: 560px) { .flash-wide .front { padding-right: 1.2rem; padding-bottom: 2rem; } }
+.flash-wide .back .bq { display: block; font-family: var(--font-display); font-weight: 700; font-size: 0.85rem; color: #a3a8b4; margin-bottom: 0.4rem; }

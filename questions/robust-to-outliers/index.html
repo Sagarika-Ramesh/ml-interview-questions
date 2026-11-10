@@ -283,30 +283,14 @@ for name, m in {"OLS": ols, "Huber": huber}.items():
   <section id="followups">
     <div class="kicker">Be ready for these</div>
     <h2>Follow-ups interviewers ask</h2>
+    <p class="hint">Try answering out loud, then tap a card to check.</p>
+    <div class="flashes flashes-wide">
 
-    <div class="followup">
-      <h3><span class="n">1.</span>Why not just delete the outliers?</h3>
-      <p>Because they may be real, and then the model will be overconfident in production when the same kind of case shows up. Deleting them also shifts the data distribution, can quietly remove an important subgroup, and the deletion rule itself becomes a tuned hyperparameter. Delete errors and keep real events.</p>
-    </div>
-
-    <div class="followup">
-      <h3><span class="n">2.</span>How do you choose δ for Huber loss?</h3>
-      <p>δ sets where an error stops counting as normal. A common rule is about 1.35 × the residual standard deviation, preferably estimated robustly with the MAD. That keeps about 95% of OLS efficiency when the data really is Gaussian. Otherwise, tune it by cross-validation on a robust metric.</p>
-    </div>
-
-    <div class="followup">
-      <h3><span class="n">3.</span>Are tree models completely immune to outliers?</h3>
-      <p>No. They're robust to extreme <em>feature</em> values because splits only use the order. With squared loss, a leaf's prediction is still the mean of its targets, so an extreme y skews that leaf, and in boosting it creates large residuals that later trees chase. Use a Huber, MAE or quantile objective.</p>
-    </div>
-
-    <div class="followup">
-      <h3><span class="n">4.</span>MAE is robust, so why isn't it always used?</h3>
-      <p>Its gradient has the same size whatever the error, so it doesn't slow down near the optimum and can oscillate. It isn't differentiable at zero, and it predicts the median, which is wrong if the business needs the mean (expected revenue, for example). Huber gives most of the robustness with smoother optimisation.</p>
-    </div>
-
-    <div class="followup">
-      <h3><span class="n">5.</span>What's the difference between an outlier and a high-leverage point?</h3>
-      <p>An outlier has an unusual <strong>y</strong> given its x. A high-leverage point has an unusual <strong>x</strong>. A point is <em>influential</em> when removing it changes the fit a lot, which usually takes both. Cook's distance measures that influence.</p>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">1</span>Why not just delete the outliers?</span></span><span class="face back"><span class="txt"><span class="bq">1. Why not just delete the outliers?</span>Because they may be real, and then the model will be overconfident in production when the same kind of case shows up. Deleting them also shifts the data distribution, can quietly remove an important subgroup, and the deletion rule itself becomes a tuned hyperparameter. Delete errors and keep real events.</span></span></button>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">2</span>How do you choose δ for Huber loss?</span></span><span class="face back"><span class="txt"><span class="bq">2. How do you choose δ for Huber loss?</span>δ sets where an error stops counting as normal. A common rule is about 1.35 × the residual standard deviation, preferably estimated robustly with the MAD. That keeps about 95% of OLS efficiency when the data really is Gaussian. Otherwise, tune it by cross-validation on a robust metric.</span></span></button>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">3</span>Are tree models completely immune to outliers?</span></span><span class="face back"><span class="txt"><span class="bq">3. Are tree models completely immune to outliers?</span>No. They're robust to extreme <em>feature</em> values because splits only use the order. With squared loss, a leaf's prediction is still the mean of its targets, so an extreme y skews that leaf, and in boosting it creates large residuals that later trees chase. Use a Huber, MAE or quantile objective.</span></span></button>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">4</span>MAE is robust, so why isn't it always used?</span></span><span class="face back"><span class="txt"><span class="bq">4. MAE is robust, so why isn't it always used?</span>Its gradient has the same size whatever the error, so it doesn't slow down near the optimum and can oscillate. It isn't differentiable at zero, and it predicts the median, which is wrong if the business needs the mean (expected revenue, for example). Huber gives most of the robustness with smoother optimisation.</span></span></button>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">5</span>What's the difference between an outlier and a high-leverage point?</span></span><span class="face back"><span class="txt"><span class="bq">5. What's the difference between an outlier and a high-leverage point?</span>An outlier has an unusual <strong>y</strong> given its x. A high-leverage point has an unusual <strong>x</strong>. A point is <em>influential</em> when removing it changes the fit a lot, which usually takes both. Cook's distance measures that influence.</span></span></button>
     </div>
   </section>
 
@@ -362,16 +346,6 @@ for name, m in {"OLS": ols, "Huber": huber}.items():
       <figcaption>Ask two questions and <em>the loss picks itself.</em></figcaption>
     </figure>
 
-    <h3>Flash cards</h3>
-    <p class="hint">Only the trickier ideas. Tap a card to flip it.</p>
-    <div class="flashes">
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why can the z-score fail to flag the very outliers you're hunting?</span><span class="face back"><span class="txt"><b>Masking.</b> Outliers inflate the mean and standard deviation, which shrinks their own z-scores. Use the modified z-score, built on the median and median absolute deviation (MAD).</span></span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">A point looks normal on every feature. How can it still be an outlier?</span><span class="face back"><span class="txt">It can be odd as a <b>combination</b> (1.9 m tall, 40 kg). Mahalanobis distance catches that, but plain covariance is itself pulled by outliers, so use a robust estimate such as Minimum Covariance Determinant (MCD).</span></span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Huber vs Tukey's biweight: how do they treat a huge error differently?</span><span class="face back"><span class="txt">Huber caps a point's influence at δ, so a gross outlier still pulls a little. Tukey's influence <b>drops to zero</b>: far points are ignored entirely. The cost is a non-convex loss that needs a good starting fit.</span></span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why can focal loss make noisy labels worse?</span><span class="face back"><span class="txt">It up-weights high-loss examples. A <b>mislabeled</b> example has high loss by definition, so focal loss pushes the model to fit the wrong label even harder.</span></span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">RMSE is much larger than MAE. What does that tell you?</span><span class="face back"><span class="txt">RMSE ≥ MAE always, and they're equal only when every error is the same size. A <b>big gap</b> means a few large errors dominate: heavy tails or outliers in the residuals.</span></span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why does early stopping help when labels are noisy?</span><span class="face back"><span class="txt">Networks learn the clean, shared patterns first and only <b>memorise</b> the noisy or outlying examples late in training. Stopping early keeps the patterns and leaves out the memorised noise.</span></span></button>
-    </div>
   </section>
 
   <nav class="pager" aria-label="More questions"><a href="../../">← Back to all questions</a></nav>
