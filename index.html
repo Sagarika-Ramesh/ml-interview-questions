@@ -2,131 +2,556 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Machine learning interview questions, answered with diagrams, code and the follow-ups interviewers ask.">
 <title>ML Interview Questions</title>
-<meta name="description" content="Machine learning interview questions with detailed answers.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&family=Kalam:wght@400;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
 <style>
-  :root {
-    --bg: #fbfaf7; --fg: #1d1d1f; --muted: #5f6368; --accent: #2457c5;
-    --card: #ffffff; --border: #e4e2dc; --code-bg: #f1efe9; --q-bg: #eef3fd;
+html{-webkit-text-size-adjust:100%}
+body{margin:0}
+[hidden]{display:none!important}
+
+:root {
+  --bg: #f7f8fa; --fg: #1f2430; --muted: #5a6170; --rule: #e2e4ea;
+  --chip-bg: #eceef2; --chip-fg: #2a2e38;
+  --callout-bg: #e5f1fb; --callout-line: #c9e0f2;
+  --accent: #6b47a3; --accent-soft: #efe8f8;
+  --bad: #b8401a; --bad-soft: #fbe9e2; --good: #187a3c; --good-soft: #e3f4e8;
+  --card: #ffffff;
+  --d-ink: #262a33; --d-blue: #b5dbf7; --d-purple: #ddd0f6; --d-green: #c5ebcb; --d-amber: #fde5a9;
+  --d-red: #d2452a; --d-greenink: #1d8a43; --d-blueink: #2b6cb0;
+  --frame: linear-gradient(135deg, #e697b5 0%, #a374c2 55%, #6a4aa1 100%);
+  --code-bg: #10131a;
+  --font-display: "Bricolage Grotesque", "Avenir Next", "Segoe UI", sans-serif;
+  --font-body: "Source Serif 4", Charter, Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-hand: "Kalam", "Comic Neue", "Chalkboard SE", cursive;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #14151b; --fg: #e5e6eb; --muted: #a3a8b4; --rule: #2a2c36;
+    --chip-bg: #252733; --chip-fg: #e2e3ea; --callout-bg: #15283a; --callout-line: #24435e;
+    --accent: #c4a6f2; --accent-soft: #2b2240; --bad: #ff8a65; --bad-soft: #3a1f17;
+    --good: #6fd795; --good-soft: #15301f; --card: #1c1d26; --d-ink: #d9dbe3;
+    --d-blue: #1f3e59; --d-purple: #3a2d57; --d-green: #1d4a2c; --d-amber: #4d3c12;
+    --d-red: #ff7a5c; --d-greenink: #6fd795; --d-blueink: #7cb8f2; color-scheme: dark;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #141517; --fg: #e8e8ea; --muted: #a0a4ab; --accent: #8ab0ff;
-      --card: #1c1d20; --border: #2e3035; --code-bg: #26282c; --q-bg: #1d2638;
-    }
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--fg);
-    font: 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-  main { max-width: 760px; margin: 0 auto; padding: 48px 16px 80px; }
-  header .eyebrow { color: var(--accent); font-weight: 600; font-size: 13px; letter-spacing: .08em; text-transform: uppercase; }
-  h1 { font-size: 2.1rem; line-height: 1.2; margin: .3em 0 .2em; }
-  header p { color: var(--muted); margin-top: 0; }
-  .question {
-    background: var(--q-bg); border-left: 4px solid var(--accent);
-    padding: 16px 20px; border-radius: 8px; margin: 32px 0;
-  }
-  .question .label, .answer-label { font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
-  .question p { margin: 4px 0 0; font-size: 1.15rem; font-weight: 600; }
-  nav.toc { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 20px; margin: 16px 0 8px; }
-  nav.toc ol { margin: 6px 0; padding-left: 20px; }
-  nav.toc a { color: var(--accent); text-decoration: none; }
-  nav.toc a:hover { text-decoration: underline; }
-  h2 { font-size: 1.35rem; margin-top: 2.2em; padding-top: .4em; border-top: 1px solid var(--border); }
-  ul, ol { padding-left: 22px; }
-  li { margin: 6px 0; }
-  code { background: var(--code-bg); padding: 1px 6px; border-radius: 4px; font-size: .9em; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
-  .callout { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px 20px; margin-top: 16px; }
-  footer { margin-top: 56px; color: var(--muted); font-size: 14px; border-top: 1px solid var(--border); padding-top: 16px; }
+}
+:root[data-theme="dark"] {
+  --bg: #14151b; --fg: #e5e6eb; --muted: #a3a8b4; --rule: #2a2c36;
+  --chip-bg: #252733; --chip-fg: #e2e3ea; --callout-bg: #15283a; --callout-line: #24435e;
+  --accent: #c4a6f2; --accent-soft: #2b2240; --bad: #ff8a65; --bad-soft: #3a1f17;
+  --good: #6fd795; --good-soft: #15301f; --card: #1c1d26; --d-ink: #d9dbe3;
+  --d-blue: #1f3e59; --d-purple: #3a2d57; --d-green: #1d4a2c; --d-amber: #4d3c12;
+  --d-red: #ff7a5c; --d-greenink: #6fd795; --d-blueink: #7cb8f2; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--font-body); font-size: 1.125rem; line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0 4rem;
+}
+main { max-width: 46rem; margin: 0 auto; }
+p { margin: 0; }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+
+/* Hero */
+.hero { padding-block: 3.5rem 1.5rem; display: grid; gap: 1rem; }
+.eyebrow { font-family: var(--font-hand); font-size: 1.1rem; color: var(--accent); }
+h1 { font-family: var(--font-display); font-weight: 800; font-size: clamp(2.4rem, 7vw, 3.6rem); line-height: 1.05; margin: 0; letter-spacing: -0.02em; text-wrap: balance; }
+h1 .squiggle { background: linear-gradient(transparent 62%, var(--d-amber) 62%); padding-inline: 0.1em; }
+.lede { font-size: 1.25rem; color: var(--muted); max-width: 38rem; }
+.toc { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.5rem 0 0; padding: 0; list-style: none; }
+.toc a { display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: 0.9rem; text-decoration: none; color: var(--fg); background: var(--card); border: 1.5px solid var(--rule); border-radius: 999px; padding: 0.3rem 0.85rem; }
+.toc a:hover { border-color: var(--accent); color: var(--accent); }
+
+/* Question card */
+.qcard { margin-top: 1.5rem; background: var(--frame); border-radius: 18px; padding: 14px; }
+.qcard-inner { background: var(--card); border-radius: 11px; padding: 1.2rem 1.3rem 1.3rem; display: grid; gap: 0.9rem; }
+.qnum { font-family: var(--font-hand); color: var(--accent); font-size: 1.1rem; display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; }
+.qnum .chip { font-family: var(--font-display); font-weight: 600; font-size: 0.75rem; letter-spacing: 0.05em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 0.1rem 0.6rem; }
+.qcard h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+.short { border-left: 3px solid var(--accent); padding: 0.1rem 0 0.1rem 1rem; }
+.short .label { font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); display: block; margin-bottom: 0.2rem; }
+
+/* Sections */
+section { padding-top: 2.5rem; display: flex; flex-direction: column; gap: 1.1rem; }
+section > h2 { font-family: var(--font-display); font-weight: 800; font-size: clamp(1.6rem, 4.5vw, 2.1rem); line-height: 1.15; margin: 0; letter-spacing: -0.01em; text-wrap: balance; }
+section > .kicker { font-family: var(--font-hand); color: var(--accent); font-size: 1.05rem; margin-bottom: -0.8rem; }
+h3 { font-family: var(--font-display); font-weight: 600; font-size: 1.25rem; line-height: 1.25; margin: 0.6rem 0 0; text-wrap: balance; }
+
+code { font-family: var(--font-mono); font-size: 0.82em; font-weight: 600; background: var(--chip-bg); color: var(--chip-fg); border: 1px solid var(--rule); border-radius: 6px; padding: 0.08em 0.38em; }
+pre code { all: unset; }
+
+ul.plain { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.5rem; }
+ul.plain li::marker { color: var(--muted); }
+
+/* Callout */
+.callout { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start; background: var(--callout-bg); border: 1px solid var(--callout-line); border-radius: 14px; padding: 1rem 1.2rem; }
+.callout .hand { font-size: 1.4rem; line-height: 1.5; }
+.callout p { min-width: 0; }
+
+/* Code frames */
+.code { margin: 0; background: var(--frame); border-radius: 16px; padding: 14px; min-width: 0; }
+.code-inner { background: var(--code-bg); border-radius: 10px; overflow: hidden; }
+.code-head { display: flex; align-items: center; gap: 0.6rem; padding: 0.55rem 0.9rem 0; font-family: var(--font-mono); font-size: 0.78rem; color: #9aa3b2; }
+.code-head .label { flex: 1; min-width: 0; }
+.tag { font-family: var(--font-display); font-weight: 800; font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 6px; padding: 0.12rem 0.5rem; }
+.tag.bad { background: #4a1d14; color: #ffb199; }
+.tag.good { background: #12391f; color: #8fe3aa; }
+.tag.note { background: #2c2347; color: #d6c3ff; }
+.copy { font-family: var(--font-mono); font-size: 0.72rem; color: #c7cfdb; background: transparent; border: 1px solid #343a47; border-radius: 6px; padding: 0.15rem 0.5rem; cursor: pointer; }
+.copy:hover { border-color: #8b93a3; }
+pre { margin: 0; padding: 0.7rem 0.95rem 0.9rem; overflow-x: auto; font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.6; color: #e6edf3; tab-size: 4; }
+.tk-kw { color: #ff7b72; } .tk-fn { color: #d2a8ff; } .tk-str { color: #a5d6ff; }
+.tk-num { color: #79c0ff; } .tk-com { color: #8b949e; font-style: italic; } .tk-op { color: #ffa657; }
+
+/* Diagrams */
+.diagram { margin: 0; background: var(--frame); border-radius: 16px; padding: 14px; }
+.diagram-inner { background: var(--card); border-radius: 10px; padding: 0.75rem; overflow-x: auto; }
+.diagram svg { display: block; width: 100%; min-width: 34rem; height: auto; }
+.diagram figcaption { font-family: var(--font-hand); color: #fff; font-size: 1rem; padding: 0.55rem 0.3rem 0; text-align: center; }
+svg .ink { stroke: var(--d-ink); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+svg .thick { stroke-width: 3; }
+svg .dash { stroke-dasharray: 6 6; }
+svg .box { stroke: var(--d-ink); stroke-width: 2; }
+svg .dot { stroke: var(--d-ink); stroke-width: 1.5; fill: var(--d-blue); }
+svg .f-blue { fill: var(--d-blue); } svg .f-purple { fill: var(--d-purple); } svg .f-green { fill: var(--d-green); } svg .f-amber { fill: var(--d-amber); } svg .f-card { fill: var(--card); }
+svg .f-redsoft { fill: var(--bad-soft); }
+svg text { font-family: var(--font-hand); fill: var(--d-ink); }
+svg .t-big { font-size: 19px; font-weight: 700; }
+svg .t-mid { font-size: 16px; }
+svg .t-small { font-size: 14px; }
+svg .t-red { fill: var(--d-red); } svg .t-green { fill: var(--d-greenink); } svg .t-blue { fill: var(--d-blueink); }
+svg .s-red { stroke: var(--d-red); } svg .s-green { stroke: var(--d-greenink); } svg .s-blue { stroke: var(--d-blueink); }
+svg .rough { filter: url(#rough); }
+
+/* Tables */
+.tbl-wrap { overflow-x: auto; background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px; }
+table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+th, td { text-align: left; padding: 0.6rem 0.9rem; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font-family: var(--font-display); font-weight: 600; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); white-space: nowrap; }
+tr:last-child td { border-bottom: 0; }
+td.name { font-family: var(--font-display); font-weight: 600; white-space: nowrap; }
+.pill { font-family: var(--font-display); font-weight: 600; font-size: 0.8rem; border-radius: 999px; padding: 0.1rem 0.6rem; white-space: nowrap; }
+.pill.yes { background: var(--good-soft); color: var(--good); }
+.pill.no { background: var(--bad-soft); color: var(--bad); }
+.pill.unk { background: var(--d-amber); color: var(--fg); }
+
+/* Follow-up Q&A */
+.qa { display: grid; grid-template-columns: auto 1fr; gap: 0.35rem 0.8rem; font-size: 1.02rem; }
+.qa dt { font-family: var(--font-display); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; padding-top: 0.25rem; color: var(--muted); }
+.qa dd { margin: 0; min-width: 0; }
+.followup { display: grid; gap: 0.6rem; padding: 1rem 1.1rem; background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px; }
+.followup h3 { margin: 0; display: flex; gap: 0.6rem; align-items: baseline; font-size: 1.15rem; }
+.followup h3 .n { font-family: var(--font-hand); font-weight: 700; color: var(--accent); font-size: 1.05rem; flex: none; }
+
+/* Cheat sheet */
+.cheats { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: 0.9rem; }
+.cheat { background: var(--card); border: 1.5px solid var(--rule); border-radius: 14px; padding: 0.9rem 1rem; font-size: 1rem; line-height: 1.55; min-width: 0; }
+.cheat b { font-family: var(--font-display); display: block; font-size: 1rem; margin-bottom: 0.2rem; }
+
+footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--rule); color: var(--muted); font-size: 0.95rem; }
+
+@media (max-width: 560px) {
+  body { font-size: 1.05rem; }
+  .qa { grid-template-columns: 1fr; }
+  .qa dt { padding-top: 0.4rem; }
+  .qcard-inner { padding: 1rem; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .toc a, .copy { transition: border-color 0.15s, color 0.15s; }
+}
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves="2" seed="7" result="n"/>
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M1,1 L9,5 L1,9" fill="none" stroke="context-stroke" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+    </marker>
+  </defs>
+</svg>
+
 <main>
-  <header>
-    <div class="eyebrow">Interview prep</div>
-    <h1>ML Interview Questions</h1>
-    <p>Machine learning interview questions with practical, detailed answers.</p>
+  <header class="hero">
+    <div class="eyebrow">ML field notes · interview prep for data scientists &amp; engineers</div>
+    <h1>ML Interview Questions, <span class="squiggle">Answered</span></h1>
+    <p class="lede">Questions that come up in machine learning interviews, each with a short answer you can say out loud, then the full picture: diagrams, code and the follow-ups interviewers like to ask.</p>
+    <ul class="toc" aria-label="Sections">
+      <li><a href="#q1">Q1 · Outliers</a></li>
+      <li><a href="#first">Error or real?</a></li>
+      <li><a href="#data">Data</a></li>
+      <li><a href="#loss">Loss functions</a></li>
+      <li><a href="#models">Models</a></li>
+      <li><a href="#training">Training</a></li>
+      <li><a href="#evaluation">Evaluation</a></li>
+      <li><a href="#followups">Follow-ups</a></li>
+      <li><a href="#cheatsheet">Cheat sheet</a></li>
+    </ul>
   </header>
 
-  <section class="question" id="q1">
-    <div class="label">Question 1</div>
-    <p>How do you make models more robust to outliers?</p>
-  </section>
-
-  <div class="answer-label">Answer</div>
-  <p>There are four places to deal with outliers: the <strong>data</strong>, the <strong>loss function</strong>, the <strong>model</strong>, and the <strong>training process</strong>. Which one fits depends on whether your outliers are bad data (sensor glitches, typos, mislabels) or real rare events you still need to predict.</p>
-
-  <nav class="toc" aria-label="Contents">
-    <ol>
-      <li><a href="#data">Data: find them and handle them</a></li>
-      <li><a href="#loss">Loss function</a></li>
-      <li><a href="#model">Model choice</a></li>
-      <li><a href="#training">Training process</a></li>
-      <li><a href="#evaluation">Evaluation</a></li>
-      <li><a href="#default">A practical default</a></li>
-    </ol>
-  </nav>
-
-  <h2 id="data">1. Data: find them and handle them</h2>
-  <ul>
-    <li><strong>Detect them:</strong> z-scores or IQR fences for a single feature. For several features at once, use Mahalanobis distance, Isolation Forest, Local Outlier Factor or One-Class SVM.</li>
-    <li><strong>Remove them:</strong> only when you're confident they're errors. Deleting real extremes hides risk.</li>
-    <li><strong>Clip them (winsorize):</strong> cap values at a percentile, for example the 1st and 99th.</li>
-    <li><strong>Transform skewed features:</strong> use log, Box-Cox or Yeo-Johnson. A heavy tail stops looking extreme after the transform.</li>
-    <li><strong>Scale robustly:</strong> use <code>RobustScaler</code> (median and IQR) instead of <code>StandardScaler</code>, because outliers distort the mean and standard deviation.</li>
-    <li><strong>Bin the feature or use rank/quantile transforms:</strong> then only the order of values matters, not their size.</li>
-  </ul>
-
-  <h2 id="loss">2. Loss function: often the biggest single improvement</h2>
-  <p>Squared error (MSE) penalizes errors quadratically, so a few outliers dominate training. Alternatives:</p>
-  <ul>
-    <li><strong>MAE / L1 loss:</strong> predicts the median, so it's robust, but its gradient isn't smooth at zero.</li>
-    <li><strong>Huber loss:</strong> quadratic for small errors and linear for large ones. It's the usual default. In PyTorch it's <code>nn.HuberLoss</code>; <code>SmoothL1Loss</code> is the same idea.</li>
-    <li><strong>Log-cosh:</strong> a smooth version of Huber.</li>
-    <li><strong>Quantile (pinball) loss:</strong> predicts a chosen quantile instead of the mean.</li>
-    <li><strong>Tukey's biweight / Cauchy loss:</strong> errors beyond a threshold barely move the fit. These are strongly robust but non-convex.</li>
-    <li><strong>For classification with noisy labels:</strong> generalized cross-entropy, symmetric cross-entropy, label smoothing, or focal loss used with care, since focal loss can also amplify mislabeled hard examples.</li>
-  </ul>
-
-  <h2 id="model">3. Model choice</h2>
-  <ul>
-    <li><strong>Tree-based models</strong> (random forests, gradient boosting) are largely unaffected by outliers in the input features, because they split on order. Outliers in the target still matter, so pair them with a robust loss: XGBoost and LightGBM support Huber and quantile objectives.</li>
-    <li><strong>Robust linear regression:</strong> <code>HuberRegressor</code>, <code>RANSACRegressor</code> and <code>TheilSenRegressor</code> in scikit-learn.</li>
-    <li><strong>Distance-based models</strong> (k-NN, SVM, k-means) are sensitive. Scale robustly first, or use k-medoids instead of k-means.</li>
-    <li><strong>Bayesian models:</strong> use a heavy-tailed likelihood such as Student-t instead of a Gaussian.</li>
-  </ul>
-
-  <h2 id="training">4. Training process</h2>
-  <ul>
-    <li><strong>Regularization</strong> (L1/L2, dropout) stops the model from bending to fit individual points.</li>
-    <li><strong>Gradient clipping</strong> keeps outlier batches from causing destabilizing updates in neural networks.</li>
-    <li><strong>Sample reweighting:</strong> down-weight high-loss points (iteratively reweighted least squares), or use small-loss selection such as co-teaching for noisy labels.</li>
-    <li><strong>Ensembling and bagging</strong> average out the influence of any single point.</li>
-    <li><strong>Early stopping:</strong> networks memorize noisy or outlier examples late in training.</li>
-  </ul>
-
-  <h2 id="evaluation">5. Evaluation</h2>
-  <ul>
-    <li>Report robust metrics (MAE, median absolute error) next to RMSE.</li>
-    <li>Look at how errors are spread across the data, not just the average. Inspect the worst residuals.</li>
-    <li>Check that your train/test split doesn't put all the outliers on one side.</li>
-  </ul>
-
-  <h2 id="default">A practical default</h2>
-  <div class="callout">
-    <ol>
-      <li>Plot the data and work out whether the outliers are errors or real events.</li>
-      <li>Fix or remove errors. Keep real extremes.</li>
-      <li>Use <code>RobustScaler</code> or a log transform on skewed features.</li>
-      <li>Train with Huber loss (or use gradient-boosted trees with a Huber objective).</li>
-      <li>Compare against your MSE baseline using MAE and a look at the residuals.</li>
-    </ol>
+  <!-- ============ QUESTION 1 ============ -->
+  <div class="qcard" id="q1">
+    <div class="qcard-inner">
+      <div class="qnum">Question 1 <span class="chip">Robustness</span><span class="chip">Very common</span></div>
+      <h2>How do you make a model more robust to outliers?</h2>
+      <div class="short">
+        <span class="label">The 30-second answer</span>
+        <p>First I'd find out whether the outliers are <strong>errors</strong> or <strong>real rare events</strong>. I'd fix or drop errors and keep real extremes. Then I'd limit how much any single point can pull the model: transform or clip skewed features, scale with the median and IQR, and swap MSE for <strong>Huber</strong> or MAE loss. Tree-based models help with odd feature values. Finally I'd evaluate with MAE as well as RMSE and look at the worst residuals.</p>
+      </div>
+    </div>
   </div>
 
-  <footer>Published with GitHub Pages.</footer>
+  <!-- ============ ERROR OR REAL ============ -->
+  <section id="first">
+    <div class="kicker">Start here</div>
+    <h2>First question: error, or a real rare event?</h2>
+    <p>"Outlier" covers two very different things, and the right fix depends on which one you have. A sensor reading of −999 is an error. A $40,000 purchase in a fraud dataset is probably the most important row you have.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 300" role="img" aria-label="Decision diagram. An outlier is either a data error, such as a typo, sensor glitch or mislabel, which you fix or remove, or a real rare event, which you keep and handle with robust losses, transforms or models, or by modelling it on purpose.">
+          <g class="rough">
+            <rect class="box f-amber" x="270" y="20" width="200" height="60" rx="12"/>
+            <rect class="box f-redsoft" x="40" y="150" width="290" height="120" rx="12"/>
+            <rect class="box f-green" x="410" y="150" width="290" height="120" rx="12"/>
+            <path class="ink" d="M320,82 C290,110 220,120 190,146" marker-end="url(#arrow)"/>
+            <path class="ink" d="M420,82 C450,110 520,120 550,146" marker-end="url(#arrow)"/>
+          </g>
+          <text class="t-big" x="370" y="57" text-anchor="middle">an outlier!</text>
+          <text class="t-mid" x="205" y="118" text-anchor="middle">it's wrong</text>
+          <text class="t-mid" x="535" y="118" text-anchor="middle">it's real</text>
+          <text class="t-big t-red" x="185" y="182" text-anchor="middle">Data error</text>
+          <text class="t-small" x="185" y="206" text-anchor="middle">typo, unit mix-up, sensor glitch,</text>
+          <text class="t-small" x="185" y="226" text-anchor="middle">mislabel, -999 meaning "missing"</text>
+          <text class="t-mid t-red" x="185" y="254" text-anchor="middle">→ fix it or remove it</text>
+          <text class="t-big t-green" x="555" y="182" text-anchor="middle">Real rare event</text>
+          <text class="t-small" x="555" y="206" text-anchor="middle">fraud, a viral post, a whale customer,</text>
+          <text class="t-small" x="555" y="226" text-anchor="middle">a market crash</text>
+          <text class="t-mid t-green" x="555" y="254" text-anchor="middle">→ keep it, limit its pull</text>
+        </svg>
+      </div>
+      <figcaption>Deleting a real extreme doesn't remove the risk. It just hides it from the model.</figcaption>
+    </figure>
+
+    <div class="callout"><span class="hand" aria-hidden="true">👉</span><p>Sometimes the outliers <em>are</em> the task. In fraud or anomaly detection you don't make the model ignore them. You model them directly, for example with Isolation Forest or class weighting.</p></div>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section id="data">
+    <div class="kicker">Layer 1 · the data</div>
+    <h2>Find them, then decide what to do</h2>
+    <p>For a single feature, simple rules work. When a point is only odd as a <em>combination</em> of features (a 1.9 m tall person weighing 40 kg), you need a multivariate method.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Method</th><th>Looks at</th><th>Good to know</th></tr></thead>
+        <tbody>
+          <tr><td class="name">IQR fences</td><td><span class="pill yes">1 feature</span></td><td>Flags points beyond Q1 − 1.5·IQR or Q3 + 1.5·IQR. No normality assumption.</td></tr>
+          <tr><td class="name">z-score</td><td><span class="pill yes">1 feature</span></td><td>|z| &gt; 3 is common, but the mean and std are pulled by the very outliers you're hunting. The modified z-score uses the median and MAD instead.</td></tr>
+          <tr><td class="name">Mahalanobis</td><td><span class="pill unk">many</span></td><td>Distance that accounts for correlation. Assumes a roughly elliptical shape.</td></tr>
+          <tr><td class="name">Isolation Forest</td><td><span class="pill unk">many</span></td><td>Random splits isolate outliers in fewer steps. Fast and works on high-dimensional tabular data.</td></tr>
+          <tr><td class="name">LOF</td><td><span class="pill unk">many</span></td><td>Compares local density with the neighbours'. Catches points that are odd only within their own cluster.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Then handle them</h3>
+    <ul class="plain">
+      <li><strong>Remove</strong> only when you're confident it's an error, and record how many rows you dropped.</li>
+      <li><strong>Clip (winsorize)</strong> to, say, the 1st and 99th percentiles. You keep the row but cap its pull.</li>
+      <li><strong>Transform</strong> skewed features with log, Box-Cox or Yeo-Johnson. After the transform, a heavy tail stops looking extreme.</li>
+      <li><strong>Scale robustly</strong> with <code>RobustScaler</code> (median and IQR) instead of <code>StandardScaler</code> (mean and std).</li>
+      <li><strong>Rank or bin</strong> with <code>QuantileTransformer</code>, so only the order of values matters.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Pattern</span><span class="label">clip, log, robust-scale inside a pipeline</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">import numpy as np
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import FunctionTransformer, RobustScaler
+
+# Learn clip bounds on the training data only, then apply them everywhere
+lo, hi = np.percentile(X_train, [1, 99], axis=0)
+
+prep = make_pipeline(
+    FunctionTransformer(lambda X: np.clip(X, lo, hi)),
+    FunctionTransformer(np.log1p),   # only for non-negative, right-skewed features
+    RobustScaler(),                  # centres on the median, scales by the IQR
+)</code></pre>
+    </div></figure>
+
+    <div class="callout"><span class="hand" aria-hidden="true">⚠️</span><p>Compute percentiles and scalers on the <strong>training set only</strong>. Fitting them on all the data leaks test-set information into training.</p></div>
+  </section>
+
+  <!-- ============ LOSS ============ -->
+  <section id="loss">
+    <div class="kicker">Layer 2 · the loss function</div>
+    <h2>Stop squaring big errors</h2>
+    <p>This is often the single biggest improvement. MSE squares each error, so one point that's 10 units off counts as much as 100 points that are 1 unit off. The model bends toward that one point.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 310" role="img" aria-label="Scatter plot of ten points along a rising trend, with one outlier far below on the right. The least squares line is pulled down and flattened by the outlier. The Huber regression line passes through the main cloud of points.">
+          <g class="rough">
+            <path class="ink" d="M60,270 H700 M60,270 V30"/>
+            <path class="ink thick s-red" d="M80,214 L690,150"/>
+            <path class="ink thick s-green" d="M80,236 L690,90"/>
+            <path class="ink dash s-red" d="M640,240 C620,220 610,200 615,170" marker-end="url(#arrow)"/>
+          </g>
+          <circle class="dot" cx="110" cy="226" r="7"/>
+          <circle class="dot" cx="165" cy="218" r="7"/>
+          <circle class="dot" cx="220" cy="200" r="7"/>
+          <circle class="dot" cx="275" cy="192" r="7"/>
+          <circle class="dot" cx="330" cy="170" r="7"/>
+          <circle class="dot" cx="385" cy="164" r="7"/>
+          <circle class="dot" cx="440" cy="146" r="7"/>
+          <circle class="dot" cx="495" cy="136" r="7"/>
+          <circle class="dot" cx="550" cy="118" r="7"/>
+          <circle class="dot" cx="605" cy="112" r="7"/>
+          <circle cx="650" cy="252" r="9" fill="var(--d-red)" stroke="var(--d-ink)" stroke-width="1.5"/>
+          <text class="t-mid t-red" x="520" y="290">one bad point</text>
+          <text class="t-mid t-red" x="420" y="205">MSE line: dragged down</text>
+          <text class="t-mid t-green" x="380" y="110">Huber line: follows the data</text>
+          <text class="t-small" x="70" y="48" fill-opacity="0.7">y</text>
+          <text class="t-small" x="690" y="292" fill-opacity="0.7">x</text>
+        </svg>
+      </div>
+      <figcaption>One point, squared, outvotes the other ten.</figcaption>
+    </figure>
+
+    <p>Robust losses grow more slowly for large errors, so a far-off point still counts, just not quadratically.</p>
+
+    <figure class="diagram">
+      <div class="diagram-inner">
+        <svg viewBox="0 0 740 318" role="img" aria-label="Three loss curves plotted against the residual. MSE is a steep parabola. MAE is a V shape. Huber is quadratic between minus delta and plus delta and grows linearly beyond them.">
+          <g class="rough">
+            <path class="ink" d="M50,250 H690 M370,262 V30"/>
+            <path class="ink dash" d="M270,250 V40 M470,250 V40" stroke-opacity="0.45"/>
+            <path class="ink thick s-red" d="M170,50 Q370,450 570,50"/>
+            <path class="ink thick s-blue" d="M70,100 L370,250 L670,100"/>
+            <path class="ink thick s-green" d="M120,50 L270,200 Q370,300 470,200 L620,50"/>
+          </g>
+          <text class="t-small" x="270" y="34" text-anchor="middle">−δ</text>
+          <text class="t-small" x="470" y="34" text-anchor="middle">+δ</text>
+          <text class="t-small" x="370" y="274" text-anchor="middle" fill-opacity="0.75">Huber: quadratic inside ±δ, linear outside</text>
+          <path class="ink thick s-red" d="M130,300 H160"/><text class="t-mid t-red" x="168" y="305">MSE · grows like r²</text>
+          <path class="ink thick s-blue" d="M330,300 H360"/><text class="t-mid t-blue" x="368" y="305">MAE · grows like |r|</text>
+          <path class="ink thick s-green" d="M530,300 H560"/><text class="t-mid t-green" x="568" y="305">Huber</text>
+          <text class="t-small" x="676" y="270" fill-opacity="0.7">residual r</text>
+          <text class="t-small" x="380" y="44" fill-opacity="0.7">loss</text>
+        </svg>
+      </div>
+      <figcaption>Huber behaves like MSE for small errors and like MAE for big ones.</figcaption>
+    </figure>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Loss</th><th>Robust?</th><th>Trade-off</th></tr></thead>
+        <tbody>
+          <tr><td class="name">MSE / L2</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
+          <tr><td class="name">MAE / L1</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
+          <tr><td class="name">Huber</td><td><span class="pill yes">yes</span></td><td>The usual default. You choose δ, the point where quadratic switches to linear.</td></tr>
+          <tr><td class="name">Log-cosh</td><td><span class="pill yes">yes</span></td><td>A smooth Huber with no δ to tune, which suits second-order optimisers.</td></tr>
+          <tr><td class="name">Quantile</td><td><span class="pill yes">yes</span></td><td>Predicts a chosen quantile, which is handy for prediction intervals.</td></tr>
+          <tr><td class="name">Tukey / Cauchy</td><td><span class="pill unk">very</span></td><td>Large errors barely count at all. Non-convex, so start from a good initial fit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag bad">Trap</span><span class="label">default regressors minimise squared error</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">from sklearn.linear_model import LinearRegression
+model = LinearRegression().fit(X, y)   # one bad y value can tilt the whole line</code></pre>
+    </div></figure>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Fix</span><span class="label">same model family, robust loss</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py"># scikit-learn
+from sklearn.linear_model import HuberRegressor
+model = HuberRegressor(epsilon=1.35).fit(X, y)   # 1.35 is the classic default
+
+# PyTorch
+import torch.nn as nn
+loss_fn = nn.HuberLoss(delta=1.0)                # instead of nn.MSELoss()
+
+# Gradient boosting
+import lightgbm as lgb
+model = lgb.LGBMRegressor(objective="huber", alpha=1.0)   # alpha is δ here</code></pre>
+    </div></figure>
+
+    <h3>Classification: outliers are usually wrong labels</h3>
+    <p>In classification, the outliers that hurt are usually <strong>mislabeled examples</strong>. Cross-entropy pushes hard to fit them. Options: label smoothing, generalized or symmetric cross-entropy, and small-loss selection methods such as co-teaching. Focal loss up-weights hard examples, so it can make label noise <em>worse</em>.</p>
+  </section>
+
+  <!-- ============ MODELS ============ -->
+  <section id="models">
+    <div class="kicker">Layer 3 · the model</div>
+    <h2>Some models barely notice outliers</h2>
+    <p>An important distinction: an outlier in the <strong>features (X)</strong> isn't the same as an outlier in the <strong>target (y)</strong>. Trees are robust to the first kind, but not automatically to the second.</p>
+
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Model</th><th>Outliers in X</th><th>Outliers in y</th><th>Why</th></tr></thead>
+        <tbody>
+          <tr><td class="name">Trees, RF, GBM</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td></tr>
+          <tr><td class="name">Linear / OLS</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td></tr>
+          <tr><td class="name">Huber / RANSAC / Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td></tr>
+          <tr><td class="name">k-NN, SVM, k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td></tr>
+          <tr><td class="name">Neural nets</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Unbounded activations plus MSE. Normalise the inputs and use a robust loss.</td></tr>
+          <tr><td class="name">Bayesian, Student-t</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TRAINING ============ -->
+  <section id="training">
+    <div class="kicker">Layer 4 · the training loop</div>
+    <h2>Don't let one batch steer the model</h2>
+    <ul class="plain">
+      <li><strong>Regularisation</strong> (L1/L2, dropout) stops the model bending to fit individual points.</li>
+      <li><strong>Gradient clipping</strong> caps the update size when an outlier-heavy batch produces a huge gradient.</li>
+      <li><strong>Sample reweighting</strong> down-weights high-loss points. Iteratively reweighted least squares (IRLS) does this for linear models.</li>
+      <li><strong>Bagging and ensembles</strong> average out the influence of any single point.</li>
+      <li><strong>Early stopping:</strong> networks fit clean patterns first and memorise noisy points late in training, so stopping early leaves the noise out.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag note">Note</span><span class="label">gradient clipping in PyTorch</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">loss.backward()
+torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+optimizer.step()</code></pre>
+    </div></figure>
+  </section>
+
+  <!-- ============ EVALUATION ============ -->
+  <section id="evaluation">
+    <div class="kicker">Layer 5 · how you measure it</div>
+    <h2>RMSE alone can mislead you</h2>
+    <p>RMSE is itself sensitive to outliers. A model can look worse on RMSE because of three rows while being better for 99% of users, or the other way round.</p>
+    <ul class="plain">
+      <li>Report <strong>MAE</strong> and <strong>median absolute error</strong> next to RMSE.</li>
+      <li>Sort by residual and <strong>look at the worst 20 rows</strong>. They often reveal a data bug.</li>
+      <li>Check whether the outliers all ended up in train or all in test. Stratify or split by time if needed.</li>
+      <li>If the extremes matter to the business, evaluate them as <strong>a separate slice</strong>.</li>
+    </ul>
+
+    <figure class="code"><div class="code-inner">
+      <div class="code-head"><span class="tag good">Pattern</span><span class="label">compare a baseline with a robust model</span><button class="copy" type="button">copy</button></div>
+<pre><code class="py">from sklearn.metrics import mean_absolute_error, median_absolute_error, root_mean_squared_error
+
+for name, m in {"OLS": ols, "Huber": huber}.items():
+    p = m.predict(X_test)
+    print(f"{name:6s}  RMSE={root_mean_squared_error(y_test, p):.2f}  "
+          f"MAE={mean_absolute_error(y_test, p):.2f}  "
+          f"MedAE={median_absolute_error(y_test, p):.2f}")</code></pre>
+    </div></figure>
+  </section>
+
+  <!-- ============ FOLLOW-UPS ============ -->
+  <section id="followups">
+    <div class="kicker">Be ready for these</div>
+    <h2>Follow-ups interviewers ask</h2>
+
+    <div class="followup">
+      <h3><span class="n">1.</span>Why not just delete the outliers?</h3>
+      <p>Because they may be real, and then the model will be overconfident in production when the same kind of case shows up. Deleting them also shifts the data distribution, can quietly remove an important subgroup, and the deletion rule itself becomes a tuned hyperparameter. Delete errors and keep real events.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">2.</span>How do you choose δ for Huber loss?</h3>
+      <p>δ sets where an error stops counting as normal. A common rule is about 1.35 × the residual standard deviation, preferably estimated robustly with the MAD. That keeps about 95% of OLS efficiency when the data really is Gaussian. Otherwise, tune it by cross-validation on a robust metric.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">3.</span>Are tree models completely immune to outliers?</h3>
+      <p>No. They're robust to extreme <em>feature</em> values because splits only use the order. With squared loss, a leaf's prediction is still the mean of its targets, so an extreme y skews that leaf, and in boosting it creates large residuals that later trees chase. Use a Huber, MAE or quantile objective.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">4.</span>MAE is robust, so why isn't it always used?</h3>
+      <p>Its gradient has the same size whatever the error, so it doesn't slow down near the optimum and can oscillate. It isn't differentiable at zero, and it predicts the median, which is wrong if the business needs the mean (expected revenue, for example). Huber gives most of the robustness with smoother optimisation.</p>
+    </div>
+
+    <div class="followup">
+      <h3><span class="n">5.</span>What's the difference between an outlier and a high-leverage point?</h3>
+      <p>An outlier has an unusual <strong>y</strong> given its x. A high-leverage point has an unusual <strong>x</strong>. A point is <em>influential</em> when removing it changes the fit a lot, which usually takes both. Cook's distance measures that influence.</p>
+    </div>
+  </section>
+
+  <!-- ============ CHEAT SHEET ============ -->
+  <section id="cheatsheet">
+    <div class="kicker">Before the interview</div>
+    <h2>Cheat sheet</h2>
+    <div class="cheats">
+      <div class="cheat"><b>Diagnose first</b>Error → fix or drop. Real → keep and limit its pull.</div>
+      <div class="cheat"><b>Don't square big errors</b>Huber is the go-to swap for MSE. MAE if you want the median.</div>
+      <div class="cheat"><b>Scale with median and IQR</b><code>RobustScaler</code>, not <code>StandardScaler</code>. Log-transform skewed features.</div>
+      <div class="cheat"><b>Trees: X yes, y not by default</b>Robust to odd feature values. Give them a robust objective for odd targets.</div>
+      <div class="cheat"><b>Fit on train only</b>Clip bounds, scalers and outlier detectors learn from the training split.</div>
+      <div class="cheat"><b>Measure robustly</b>MAE and MedAE next to RMSE, then read the worst residuals.</div>
+    </div>
+  </section>
+
+  <footer>More questions coming. Code examples use Python with scikit-learn, PyTorch and LightGBM.</footer>
 </main>
+
+<script>
+(function () {
+  var KW = new Set(("import from as def return for in if else elif not and or is lambda with class " +
+    "None True False try except while pass yield raise").split(" "));
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function highlight(src) {
+    var re = /(#[^\n]*)|(f?"(?:[^"\\]|\\.)*"|f?'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][A-Za-z0-9_]*)|([=<>!+\-*\/]=?)|([\s\S])/g;
+    var out = "", m;
+    while ((m = re.exec(src))) {
+      if (m[1]) out += '<span class="tk-com">' + esc(m[1]) + "</span>";
+      else if (m[2]) out += '<span class="tk-str">' + esc(m[2]) + "</span>";
+      else if (m[3]) out += '<span class="tk-num">' + m[3] + "</span>";
+      else if (m[4]) {
+        var w = m[4], rest = src.slice(re.lastIndex).match(/^\(/);
+        if (KW.has(w)) out += '<span class="tk-kw">' + w + "</span>";
+        else if (rest) out += '<span class="tk-fn">' + w + "</span>";
+        else out += esc(w);
+      }
+      else if (m[5]) out += '<span class="tk-op">' + esc(m[5]) + "</span>";
+      else out += esc(m[6]);
+    }
+    return out;
+  }
+  document.querySelectorAll("pre code.py").forEach(function (el) {
+    el.innerHTML = highlight(el.textContent);
+  });
+  document.querySelectorAll(".copy").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      var code = btn.closest(".code-inner").querySelector("pre");
+      var text = code.textContent;
+      function selectIt() {
+        var r = document.createRange(); r.selectNodeContents(code);
+        var s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+        btn.textContent = "selected";
+      }
+      try {
+        navigator.clipboard.writeText(text).then(function () { btn.textContent = "copied"; }, selectIt);
+      } catch (e) { selectIt(); }
+      setTimeout(function () { btn.textContent = "copy"; }, 1600);
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
