@@ -67,6 +67,10 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
   Near-black panel `#0c0c0e`, faint blue grid, arrowed light-grey axes with ticks, 4px curves in
   the 3b1b palette (blue `#58C4DD`, yellow `#F7D96F`, red `#FC6255`, green `#83C167`), and
   STIX Two Text italic math labels. Caption is italic serif below.
+  **Every graph is labelled:** a title at the top-left inside the panel (22px, `#f2f2f2`,
+  e.g. "Three loss functions compared"; extend the viewBox upward, e.g. `0 -46 740 …`), plus
+  descriptive axis titles in `#cfcfcf` ("feature x", a rotated "target y", "residual r = y − ŷ",
+  "loss L(r)"), as well as the short math labels at the arrow tips and a legend where needed.
 - **Follow-up flip cards**: rectangles (6px radius) stacked one below the other, a see-through
   pastel yellow tint (about 13–20% alpha) with the normal theme text colour. NOT a near-solid
   yellow with dark text; she called that "eww". Numbering is plain bold "1." in yellow with a

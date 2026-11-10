@@ -133,10 +133,10 @@ prep = make_pipeline(
 
     <figure class="diagram graph">
       <div class="diagram-inner">
-<svg class="g3" viewBox="0 0 740 320" role="img" aria-label="Scatter plot of ten blue points rising from left to right, with one red outlier far below on the right. The least squares line, in red, is pulled down and flattened toward the outlier. The Huber line, in yellow, passes through the blue points.">
+<svg class="g3" viewBox="0 -46 740 386" role="img" aria-label="Scatter plot of ten blue points rising from left to right, with one red outlier far below on the right. The least squares line, in red, is pulled down and flattened toward the outlier. The Huber line, in yellow, passes through the blue points.">
 <defs><marker id="g3a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d6d6d6"/></marker></defs><line class="grid" x1="120" y1="30" x2="120" y2="280"/><line class="grid" x1="180" y1="30" x2="180" y2="280"/><line class="grid" x1="240" y1="30" x2="240" y2="280"/><line class="grid" x1="300" y1="30" x2="300" y2="280"/><line class="grid" x1="360" y1="30" x2="360" y2="280"/><line class="grid" x1="420" y1="30" x2="420" y2="280"/><line class="grid" x1="480" y1="30" x2="480" y2="280"/><line class="grid" x1="540" y1="30" x2="540" y2="280"/><line class="grid" x1="600" y1="30" x2="600" y2="280"/><line class="grid" x1="660" y1="30" x2="660" y2="280"/><line class="grid" x1="60" y1="230" x2="700" y2="230"/><line class="grid" x1="60" y1="180" x2="700" y2="180"/><line class="grid" x1="60" y1="130" x2="700" y2="130"/><line class="grid" x1="60" y1="80" x2="700" y2="80"/><line class="grid" x1="60" y1="30" x2="700" y2="30"/>
 <line class="ax" x1="60" y1="280" x2="712" y2="280" marker-end="url(#g3a1)"/><line class="ax" x1="60" y1="290" x2="60" y2="18" marker-end="url(#g3a1)"/><line class="tick" x1="120" y1="274" x2="120" y2="286"/><line class="tick" x1="180" y1="274" x2="180" y2="286"/><line class="tick" x1="240" y1="274" x2="240" y2="286"/><line class="tick" x1="300" y1="274" x2="300" y2="286"/><line class="tick" x1="360" y1="274" x2="360" y2="286"/><line class="tick" x1="420" y1="274" x2="420" y2="286"/><line class="tick" x1="480" y1="274" x2="480" y2="286"/><line class="tick" x1="540" y1="274" x2="540" y2="286"/><line class="tick" x1="600" y1="274" x2="600" y2="286"/><line class="tick" x1="660" y1="274" x2="660" y2="286"/><line class="tick" x1="54" y1="230" x2="66" y2="230"/><line class="tick" x1="54" y1="180" x2="66" y2="180"/><line class="tick" x1="54" y1="130" x2="66" y2="130"/><line class="tick" x1="54" y1="80" x2="66" y2="80"/>
-<text class="m" x="718" y="297" font-size="20">x</text><text class="m" x="72" y="26" font-size="20">y</text>
+<text x="20" y="-14" font-size="22" font-weight="600" fill="#f2f2f2">Least squares vs Huber: one outlier, two fits</text><text class="m" x="718" y="297" font-size="20">x</text><text class="m" x="72" y="26" font-size="20">y</text><text x="386" y="322" font-size="18" text-anchor="middle" fill="#cfcfcf">feature <tspan class="m">x</tspan></text><text x="26" y="155" font-size="18" text-anchor="middle" fill="#cfcfcf" transform="rotate(-90 26 155)">target <tspan class="m">y</tspan></text>
 <line x1="650" y1="244" x2="650" y2="158" stroke="#9a9a9a" stroke-width="1.8" stroke-dasharray="5 5"/>
 <line class="curve" x1="80" y1="214" x2="690" y2="150" stroke="#FC6255"/>
 <line class="curve" x1="80" y1="236" x2="690" y2="90" stroke="#F7D96F"/>
@@ -155,11 +155,11 @@ prep = make_pipeline(
 
     <figure class="diagram graph">
       <div class="diagram-inner">
-<svg class="g3" viewBox="0 0 740 330" role="img" aria-label="Loss plotted against the residual r. Mean squared error, in red, is a steep parabola. Mean absolute error, in blue, is a V shape. Huber loss, in yellow, follows the parabola between minus delta and plus delta and grows linearly beyond them.">
+<svg class="g3" viewBox="0 -46 740 400" role="img" aria-label="Loss plotted against the residual r. Mean squared error, in red, is a steep parabola. Mean absolute error, in blue, is a V shape. Huber loss, in yellow, follows the parabola between minus delta and plus delta and grows linearly beyond them.">
 <defs><marker id="g3a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#d6d6d6"/></marker></defs>
 <line x1="270" y1="250" x2="270" y2="62" stroke="#F7D96F" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="5 6"/><line x1="470" y1="250" x2="470" y2="62" stroke="#F7D96F" stroke-opacity="0.35" stroke-width="1.5" stroke-dasharray="5 6"/>
 <line class="ax" x1="30" y1="250" x2="712" y2="250" marker-end="url(#g3a2)"/><line class="ax" x1="370" y1="262" x2="370" y2="16" marker-end="url(#g3a2)"/><line class="tick" x1="170" y1="244" x2="170" y2="256"/><text x="170" y="274" font-size="15" text-anchor="middle" fill="#bdbdbd">−2</text><line class="tick" x1="270" y1="244" x2="270" y2="256"/><text x="270" y="274" font-size="15" text-anchor="middle" fill="#bdbdbd">−1</text><line class="tick" x1="470" y1="244" x2="470" y2="256"/><text x="470" y="274" font-size="15" text-anchor="middle" fill="#bdbdbd">1</text><line class="tick" x1="570" y1="244" x2="570" y2="256"/><text x="570" y="274" font-size="15" text-anchor="middle" fill="#bdbdbd">2</text>
-<text class="m" x="718" y="256" font-size="20">r</text><text x="382" y="26" font-size="19"><tspan class="m">L</tspan>(<tspan class="m">r</tspan>)</text>
+<text x="20" y="-14" font-size="22" font-weight="600" fill="#f2f2f2">Three loss functions compared</text><text class="m" x="718" y="256" font-size="20">r</text><text x="382" y="26" font-size="19">loss <tspan class="m">L</tspan>(<tspan class="m">r</tspan>)</text><text x="370" y="298" font-size="18" text-anchor="middle" fill="#cfcfcf">residual <tspan class="m">r</tspan> = <tspan class="m">y</tspan> − <tspan class="m">ŷ</tspan> (actual − predicted)</text>
 <text x="270" y="54" font-size="18" text-anchor="middle" fill="#F7D96F">−<tspan class="m">δ</tspan></text><text x="470" y="54" font-size="18" text-anchor="middle" fill="#F7D96F"><tspan class="m">δ</tspan></text>
 <path class="curve" d="M170,50 Q370,450 570,50" stroke="#FC6255"/>
 <path class="curve" d="M70,100 L370,250 L670,100" stroke="#58C4DD"/>
@@ -167,9 +167,9 @@ prep = make_pipeline(
 <text x="578" y="46" font-size="19" fill="#FC6255"><tspan class="m">r</tspan>²</text>
 <text x="628" y="46" font-size="18" fill="#F7D96F">Huber</text>
 <text x="678" y="104" font-size="19" fill="#58C4DD">|<tspan class="m">r</tspan>|</text>
-<line x1="120" y1="306" x2="150" y2="306" stroke="#FC6255" stroke-width="4" stroke-linecap="round"/><text x="158" y="312" font-size="17" fill="#e8e8e8">mean squared error (MSE)</text>
-<line x1="380" y1="306" x2="410" y2="306" stroke="#58C4DD" stroke-width="4" stroke-linecap="round"/><text x="418" y="312" font-size="17" fill="#e8e8e8">mean absolute error (MAE)</text>
-<line x1="636" y1="306" x2="666" y2="306" stroke="#F7D96F" stroke-width="4" stroke-linecap="round"/><text x="674" y="312" font-size="17" fill="#e8e8e8">Huber</text>
+<line x1="120" y1="332" x2="150" y2="332" stroke="#FC6255" stroke-width="4" stroke-linecap="round"/><text x="158" y="338" font-size="17" fill="#e8e8e8">mean squared error (MSE)</text>
+<line x1="380" y1="332" x2="410" y2="332" stroke="#58C4DD" stroke-width="4" stroke-linecap="round"/><text x="418" y="338" font-size="17" fill="#e8e8e8">mean absolute error (MAE)</text>
+<line x1="636" y1="332" x2="666" y2="332" stroke="#F7D96F" stroke-width="4" stroke-linecap="round"/><text x="674" y="338" font-size="17" fill="#e8e8e8">Huber</text>
 </svg>
       </div>
       <figcaption>Huber is quadratic inside ±δ and linear outside it, so big residuals stop dominating.</figcaption>
