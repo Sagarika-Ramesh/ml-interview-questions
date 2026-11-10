@@ -34,7 +34,7 @@
       <h1 class="qtitle">How do you make a model more robust to <span class="squiggle">outliers</span>?</h1>
       <div class="short">
         <span class="label">The 30-second answer</span>
-        <p>First I'd find out whether the outliers are <strong>errors</strong> or <strong>real rare events</strong>. I'd fix or drop errors and keep real extremes. Then I'd limit how much any single point can pull the model: transform or clip skewed features, scale with the median and IQR, and swap MSE for <strong>Huber</strong> or MAE loss. Tree-based models help with odd feature values. Finally I'd evaluate with MAE as well as RMSE and look at the worst residuals.</p>
+        <p>First I'd find out whether the outliers are <strong>errors</strong> or <strong>real rare events</strong>. I'd fix or drop errors and keep real extremes. Then I'd limit how much any single point can pull the model: transform or clip skewed features, scale with the median and interquartile range (IQR), and swap mean squared error (MSE) for <strong>Huber</strong> or mean absolute error (MAE) loss. Tree-based models help with odd feature values. Finally I'd evaluate with MAE as well as root mean squared error (RMSE) and look at the worst residuals.</p>
       </div>
     </div>
   </header>
@@ -95,11 +95,11 @@
       <table>
         <thead><tr><th>Method</th><th>Looks at</th><th>Good to know</th></tr></thead>
         <tbody>
-          <tr><td class="name">IQR fences</td><td><span class="pill yes">1 feature</span></td><td>Flags points beyond Q1 − 1.5·IQR or Q3 + 1.5·IQR. No normality assumption.</td></tr>
-          <tr><td class="name">z-score</td><td><span class="pill yes">1 feature</span></td><td>|z| &gt; 3 is common, but the mean and std are pulled by the very outliers you're hunting. The modified z-score uses the median and MAD instead.</td></tr>
-          <tr><td class="name">Mahalanobis</td><td><span class="pill unk">many</span></td><td>Distance that accounts for correlation. Assumes a roughly elliptical shape.</td></tr>
+          <tr><td class="name">Interquartile range (IQR) fences</td><td><span class="pill yes">1 feature</span></td><td>Flags points beyond Q1 − 1.5·IQR or Q3 + 1.5·IQR. No normality assumption.</td></tr>
+          <tr><td class="name">z-score</td><td><span class="pill yes">1 feature</span></td><td>|z| &gt; 3 is common, but the mean and standard deviation are pulled by the very outliers you're hunting. The modified z-score uses the median and median absolute deviation (MAD) instead.</td></tr>
+          <tr><td class="name">Mahalanobis distance</td><td><span class="pill unk">many</span></td><td>Distance that accounts for correlation. Assumes a roughly elliptical shape.</td></tr>
           <tr><td class="name">Isolation Forest</td><td><span class="pill unk">many</span></td><td>Random splits isolate outliers in fewer steps. Fast and works on high-dimensional tabular data.</td></tr>
-          <tr><td class="name">LOF</td><td><span class="pill unk">many</span></td><td>Compares local density with the neighbours'. Catches points that are odd only within their own cluster.</td></tr>
+          <tr><td class="name">Local Outlier Factor (LOF)</td><td><span class="pill unk">many</span></td><td>Compares local density with the neighbours'. Catches points that are odd only within their own cluster.</td></tr>
         </tbody>
       </table>
     </div>
@@ -109,7 +109,7 @@
       <li><strong>Remove</strong> only when you're confident it's an error, and record how many rows you dropped.</li>
       <li><strong>Clip (winsorize)</strong> to, say, the 1st and 99th percentiles. You keep the row but cap its pull.</li>
       <li><strong>Transform</strong> skewed features with log, Box-Cox or Yeo-Johnson. After the transform, a heavy tail stops looking extreme.</li>
-      <li><strong>Scale robustly</strong> with <code>RobustScaler</code> (median and IQR) instead of <code>StandardScaler</code> (mean and std).</li>
+      <li><strong>Scale robustly</strong> with <code>RobustScaler</code> (median and interquartile range) instead of <code>StandardScaler</code> (mean and std).</li>
       <li><strong>Rank or bin</strong> with <code>QuantileTransformer</code>, so only the order of values matters.</li>
     </ul>
 
@@ -136,7 +136,7 @@ prep = make_pipeline(
   <section id="loss">
     <div class="kicker">Layer 2 · the loss function</div>
     <h2>Stop squaring big errors</h2>
-    <p>This is often the single biggest improvement. MSE squares each error, so one point that's 10 units off counts as much as 100 points that are 1 unit off. The model bends toward that one point.</p>
+    <p>This is often the single biggest improvement. Mean squared error (MSE) squares each error, so one point that's 10 units off counts as much as 100 points that are 1 unit off. The model bends toward that one point.</p>
 
     <figure class="diagram">
       <div class="diagram-inner">
@@ -197,8 +197,8 @@ prep = make_pipeline(
       <table>
         <thead><tr><th>Loss</th><th>Robust?</th><th>Trade-off</th></tr></thead>
         <tbody>
-          <tr><td class="name">MSE / L2</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
-          <tr><td class="name">MAE / L1</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
+          <tr><td class="name">Mean squared error (MSE), L2</td><td><span class="pill no">no</span></td><td>Predicts the mean. Smooth and fast, but outliers dominate it.</td></tr>
+          <tr><td class="name">Mean absolute error (MAE), L1</td><td><span class="pill yes">yes</span></td><td>Predicts the median. Its gradient has the same size for every error and isn't defined at 0.</td></tr>
           <tr><td class="name">Huber</td><td><span class="pill yes">yes</span></td><td>The usual default. You choose δ, the point where quadratic switches to linear.</td></tr>
           <tr><td class="name">Log-cosh</td><td><span class="pill yes">yes</span></td><td>A smooth Huber with no δ to tune, which suits second-order optimisers.</td></tr>
           <tr><td class="name">Quantile</td><td><span class="pill yes">yes</span></td><td>Predicts a chosen quantile, which is handy for prediction intervals.</td></tr>
@@ -242,12 +242,12 @@ model = lgb.LGBMRegressor(objective="huber", alpha=1.0)   # alpha is δ here</co
       <table>
         <thead><tr><th>Model</th><th>Outliers in X</th><th>Outliers in y</th><th>Why</th></tr></thead>
         <tbody>
-          <tr><td class="name">Trees, RF, GBM</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td></tr>
-          <tr><td class="name">Linear / OLS</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td></tr>
-          <tr><td class="name">Huber / RANSAC / Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td></tr>
-          <tr><td class="name">k-NN, SVM, k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td></tr>
+          <tr><td class="name">Decision trees, random forests (RF), gradient boosting machines (GBM)</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td></tr>
+          <tr><td class="name">Linear regression, ordinary least squares (OLS)</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td></tr>
+          <tr><td class="name">Huber, random sample consensus (RANSAC), Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td></tr>
+          <tr><td class="name">k-nearest neighbours (k-NN), support vector machines (SVM), k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td></tr>
           <tr><td class="name">Neural nets</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Unbounded activations plus MSE. Normalise the inputs and use a robust loss.</td></tr>
-          <tr><td class="name">Bayesian, Student-t</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td></tr>
+          <tr><td class="name">Bayesian models with a Student-t likelihood</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td></tr>
         </tbody>
       </table>
     </div>
@@ -276,10 +276,10 @@ optimizer.step()</code></pre>
   <!-- ============ EVALUATION ============ -->
   <section id="evaluation">
     <div class="kicker">Layer 5 · how you measure it</div>
-    <h2>RMSE alone can mislead you</h2>
+    <h2>Root mean squared error (RMSE) alone can mislead you</h2>
     <p>RMSE is itself sensitive to outliers. A model can look worse on RMSE because of three rows while being better for 99% of users, or the other way round.</p>
     <ul class="plain">
-      <li>Report <strong>MAE</strong> and <strong>median absolute error</strong> next to RMSE.</li>
+      <li>Report <strong>MAE</strong> and <strong>median absolute error (MedAE)</strong> next to RMSE.</li>
       <li>Sort by residual and <strong>look at the worst 20 rows</strong>. They often reveal a data bug.</li>
       <li>Check whether the outliers all ended up in train or all in test. Stratify or split by time if needed.</li>
       <li>If the extremes matter to the business, evaluate them as <strong>a separate slice</strong>.</li>
