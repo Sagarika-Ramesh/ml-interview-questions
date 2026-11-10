@@ -188,15 +188,7 @@ prep = make_pipeline(
         </tbody>
       </table>
     </div>
-    <dl class="symbols" aria-label="What the symbols mean">
-      <div><dt><i>r</i></dt><dd>residual = <i>y</i> − <i>ŷ</i>, how far the prediction is from the truth</dd></div>
-      <div><dt><i>y</i>, <i>ŷ</i></dt><dd>the actual value and the model's predicted value</dd></div>
-      <div><dt><i>δ</i></dt><dd>Huber's threshold: errors smaller than <i>δ</i> are squared, larger ones grow linearly</dd></div>
-      <div><dt><i>τ</i></dt><dd>the quantile to predict, between 0 and 1 (0.5 is the median, 0.9 the 90th percentile)</dd></div>
-      <div><dt><i>c</i></dt><dd>Cauchy's scale: residuals much bigger than <i>c</i> add very little extra loss</dd></div>
-      <div><dt><i>e</i></dt><dd>Euler's number, about 2.718; cosh <i>r</i> = (<i>e</i><sup><i>r</i></sup> + <i>e</i><sup>−<i>r</i></sup>) / 2</dd></div>
-      <div><dt>log</dt><dd>natural logarithm (base <i>e</i>)</dd></div>
-    </dl>
+    <p class="tbl-note"><i>r</i> = <i>y</i> − <i>ŷ</i> (actual − predicted) · <i>δ</i>: Huber's switch point from squared to linear · <i>τ</i>: quantile to predict (0.5 = median) · <i>c</i>: Cauchy's scale, beyond which big errors add little loss · <i>e</i> ≈ 2.718 · log = natural log</p>
 
     <figure class="code"><div class="code-inner">
       <div class="code-head"><span class="tag bad">Trap</span><span class="label">default regressors minimise squared error</span><button class="copy" type="button">copy</button></div>

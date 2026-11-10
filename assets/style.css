@@ -381,3 +381,4 @@ th i { font-family: "STIX Two Text", serif; text-transform: none; font-size: 1re
 .symbols dd { margin: 0; }
 .symbols i, td.formula sup i { font-family: "STIX Two Text", serif; }
 td.formula sup { font-size: 0.7em; }
+.tbl-note { font-size: 0.85rem; line-height: 1.55; }
