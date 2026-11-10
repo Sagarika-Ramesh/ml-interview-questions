@@ -363,14 +363,14 @@ for name, m in {"OLS": ols, "Huber": huber}.items():
     </figure>
 
     <h3>Flash cards</h3>
-    <p class="hint">Tap a card to flip it.</p>
+    <p class="hint">Only the trickier ideas. Tap a card to flip it.</p>
     <div class="flashes">
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Error or real event: what do you do with each?</span><span class="face back">Error: fix it or drop it. Real: keep it and limit its pull.</span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">What's the go-to replacement for mean squared error (MSE)?</span><span class="face back">Huber loss. Mean absolute error (MAE) if you want the median.</span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Which scaler, and why?</span><span class="face back"><code>RobustScaler</code>: median and interquartile range (IQR), which outliers can't drag.</span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Are tree models robust to outliers?</span><span class="face back">To odd feature values, yes. To odd targets, only with a robust objective.</span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">Where do clip bounds and scalers learn their values?</span><span class="face back">On the training split only. Anything else leaks test data.</span></button>
-      <button class="flash" type="button" aria-pressed="false"><span class="face front">How do you evaluate robustly?</span><span class="face back">MAE and median absolute error (MedAE) next to RMSE, then read the worst residuals.</span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why can the z-score fail to flag the very outliers you're hunting?</span><span class="face back"><span class="txt"><b>Masking.</b> Outliers inflate the mean and standard deviation, which shrinks their own z-scores. Use the modified z-score, built on the median and median absolute deviation (MAD).</span></span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">A point looks normal on every feature. How can it still be an outlier?</span><span class="face back"><span class="txt">It can be odd as a <b>combination</b> (1.9 m tall, 40 kg). Mahalanobis distance catches that, but plain covariance is itself pulled by outliers, so use a robust estimate such as Minimum Covariance Determinant (MCD).</span></span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">Huber vs Tukey's biweight: how do they treat a huge error differently?</span><span class="face back"><span class="txt">Huber caps a point's influence at δ, so a gross outlier still pulls a little. Tukey's influence <b>drops to zero</b>: far points are ignored entirely. The cost is a non-convex loss that needs a good starting fit.</span></span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why can focal loss make noisy labels worse?</span><span class="face back"><span class="txt">It up-weights high-loss examples. A <b>mislabeled</b> example has high loss by definition, so focal loss pushes the model to fit the wrong label even harder.</span></span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">RMSE is much larger than MAE. What does that tell you?</span><span class="face back"><span class="txt">RMSE ≥ MAE always, and they're equal only when every error is the same size. A <b>big gap</b> means a few large errors dominate: heavy tails or outliers in the residuals.</span></span></button>
+      <button class="flash" type="button" aria-pressed="false"><span class="face front">Why does early stopping help when labels are noisy?</span><span class="face back"><span class="txt">Networks learn the clean, shared patterns first and only <b>memorise</b> the noisy or outlying examples late in training. Stopping early keeps the patterns and leaves out the memorised noise.</span></span></button>
     </div>
   </section>
 

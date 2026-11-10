@@ -292,3 +292,12 @@ footer { margin-top: 3rem; padding-top: 1.2rem; border-top: 1.5px dashed var(--r
 .flash[aria-pressed="true"] .front { transform: rotateY(-180deg); }
 .flash[aria-pressed="true"] .back { transform: rotateY(0deg); }
 @media (prefers-reduced-motion: reduce) { .flash .face { transition: none; } }
+
+/* Flash cards hold longer answers: both faces share one grid cell so the card grows to fit */
+.flashes { grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr)); }
+.flash { height: auto; display: grid; }
+.flash .face { position: relative; inset: auto; grid-area: 1 / 1; min-height: 11rem; padding: 1.1rem 1.2rem 1.8rem; }
+.flash .back { text-align: left; place-items: center start; font-size: 0.95rem; line-height: 1.5; }
+.flash .back b { color: var(--accent); }
+.flash .back { display: flex; align-items: center; justify-content: flex-start; }
+.flash .back .txt { display: block; }
