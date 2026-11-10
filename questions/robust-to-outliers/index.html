@@ -221,16 +221,16 @@ model = lgb.LGBMRegressor(objective="huber", alpha=1.0)   # alpha is δ here</co
     <h2>Some models barely notice outliers</h2>
     <p>An important distinction: an outlier in the <strong>features (X)</strong> isn't the same as an outlier in the <strong>target (y)</strong>. Trees are robust to the first kind, but not automatically to the second.</p>
 
-    <div class="tbl-wrap">
+    <div class="tbl-wrap tbl-wide">
       <table>
-        <thead><tr><th>Model</th><th>Outliers in X</th><th>Outliers in y</th><th>Why</th></tr></thead>
+        <thead><tr><th>Model</th><th>Outliers in X</th><th>Outliers in y</th><th>Why</th><th>How to fix</th><th>Example</th></tr></thead>
         <tbody>
-          <tr><td class="name">Decision trees, random forests (RF), gradient boosting machines (GBM)</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td></tr>
-          <tr><td class="name">Linear regression, ordinary least squares (OLS)</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td></tr>
-          <tr><td class="name">Huber, random sample consensus (RANSAC), Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td></tr>
-          <tr><td class="name">k-nearest neighbours (k-NN), support vector machines (SVM), k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td></tr>
-          <tr><td class="name">Neural nets</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Unbounded activations plus MSE. Normalise the inputs and use a robust loss.</td></tr>
-          <tr><td class="name">Bayesian models with a Student-t likelihood</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td></tr>
+          <tr><td class="name">Decision trees, random forests (RF), gradient boosting machines (GBM)</td><td><span class="pill yes">robust</span></td><td><span class="pill unk">depends</span></td><td>Splits use only the order of X. Leaf values are means of y unless you pick a robust objective.</td><td>Give boosting a robust objective (Huber, MAE or quantile) for odd targets.</td><td class="ex"><code>LGBMRegressor(objective="huber")</code></td></tr>
+          <tr><td class="name">Linear regression, ordinary least squares (OLS)</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Squared loss, plus high-leverage X points can swing the slope.</td><td>Switch to a robust regressor and scale X with the median and IQR.</td><td class="ex"><code>HuberRegressor(epsilon=1.35)</code></td></tr>
+          <tr><td class="name">Huber, random sample consensus (RANSAC), Theil-Sen</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>RANSAC fits to inliers only. Theil-Sen takes the median of pairwise slopes.</td><td>Scale X robustly and tune the inlier threshold.</td><td class="ex"><code>RANSACRegressor(residual_threshold=2.0)</code></td></tr>
+          <tr><td class="name">k-nearest neighbours (k-NN), support vector machines (SVM), k-means</td><td><span class="pill no">sensitive</span></td><td><span class="pill unk">varies</span></td><td>Distance-based, and one huge feature dominates the distance. Scale robustly, or use k-medoids.</td><td>Use RobustScaler before fitting; k-medoids instead of k-means.</td><td class="ex"><code>make_pipeline(RobustScaler(), KNeighborsRegressor())</code></td></tr>
+          <tr><td class="name">Neural nets</td><td><span class="pill no">sensitive</span></td><td><span class="pill no">sensitive</span></td><td>Unbounded activations plus MSE. Normalise the inputs and use a robust loss.</td><td>Normalise inputs, use Huber loss and clip gradients.</td><td class="ex"><code>nn.HuberLoss(delta=1.0)</code></td></tr>
+          <tr><td class="name">Bayesian models with a Student-t likelihood</td><td><span class="pill unk">varies</span></td><td><span class="pill yes">robust</span></td><td>Heavy-tailed likelihood: a far-off point is expected occasionally, so it doesn't drag the fit.</td><td>Scale X robustly; keep the degrees of freedom ν small for heavier tails.</td><td class="ex"><code>pm.StudentT("y", nu=3, mu=mu, sigma=s, observed=y)</code></td></tr>
         </tbody>
       </table>
     </div>

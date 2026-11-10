@@ -382,3 +382,13 @@ th i { font-family: "STIX Two Text", serif; text-transform: none; font-size: 1re
 .symbols i, td.formula sup i { font-family: "STIX Two Text", serif; }
 td.formula sup { font-size: 0.7em; }
 .tbl-note { font-size: 0.85rem; line-height: 1.55; }
+
+/* Example column: wrap long one-line code */
+td.ex code { white-space: normal; word-break: break-word; font-size: 0.78rem; line-height: 1.5; }
+td.ex { min-width: 11rem; }
+/* A wide table may break out of the 46rem reading column on big screens */
+.tbl-wide { width: min(76rem, calc(100vw - 32px)); position: relative; left: 50%; transform: translateX(-50%); }
+.tbl-wide td.name { min-width: 11rem; }
+.tbl-wide td:nth-child(4), .tbl-wide td:nth-child(5) { min-width: 14rem; }
+.tbl-wide td.ex { min-width: 15rem; }
+.tbl-wide table { font-size: 0.95rem; }
