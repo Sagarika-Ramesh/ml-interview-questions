@@ -36,6 +36,9 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
 - `header.qcard` (yellow outline): "Question N" plus topic chips, `h1.qtitle` with one key word
   wrapped in `span.squiggle`, then **"The 30-second answer"** (`.short`), an interview-ready summary.
 - `ul.toc toc-q`: pill links to each section.
+- The first content section starts with the "Start here" kicker, then `h3#big-picture` "The big picture"
+  and the overview **mind map** (`figure.diagram.illus`, centre node plus one branch per area), before
+  anything else. Since it comes first, avoid acronyms in it that haven't been spelled out yet.
 - Content `section`s, each with a `.kicker` (handwritten label), an `h2`, then prose, tables,
   code, figures and callouts as needed.
   End each content section with its own **decision chart** (`h3` "Decision chart: …" plus a
@@ -45,8 +48,8 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
   to check.", then `.flashes.flashes-wide` holding `button.flash.flash-wide` flip cards.
   Front: `<span class="fn">1.</span>` plus the question. Back: `<span class="bq">1. question</span>`
   plus the answer.
-- **Cheat sheet** (`#cheatsheet`), no box around it: `ol.steps` (5 key steps), a **mind map**
-  figure (an overview of all the branches). NO decision charts in the cheat sheet. NO flash cards in the cheat sheet.
+- **Cheat sheet** (`#cheatsheet`), no box around it: just `ol.steps` (5 key steps). No mind map
+  and no decision charts here. NO flash cards in the cheat sheet.
 - `nav.pager` "← Back to all questions", a `footer`, then `<p class="signature">Sagarika</p>`.
 
 ## Visual rules
