@@ -38,13 +38,15 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
 - `ul.toc toc-q`: pill links to each section.
 - Content `section`s, each with a `.kicker` (handwritten label), an `h2`, then prose, tables,
   code, figures and callouts as needed.
+  End each content section with its own **decision chart** (`h3` "Decision chart: …" plus a
+  `figure.diagram.illus` built with `tools/figure_helpers.py`), placed inside the section it belongs to
+  (e.g. "which loss?" in the loss section), never collected at the bottom.
 - **Follow-ups interviewers ask** (`#followups`): hint "Try answering out loud, then tap a card
   to check.", then `.flashes.flashes-wide` holding `button.flash.flash-wide` flip cards.
   Front: `<span class="fn">1.</span>` plus the question. Back: `<span class="bq">1. question</span>`
   plus the answer.
 - **Cheat sheet** (`#cheatsheet`), no box around it: `ol.steps` (5 key steps), a **mind map**
-  figure, and **one decision chart per mind-map branch** (e.g. data, loss, model, training, evaluation),
-  each a `figure.diagram.illus` under its own `h3` ("Decision chart: …"), built with `tools/figure_helpers.py`. NO flash cards in the cheat sheet.
+  figure (an overview of all the branches). NO decision charts in the cheat sheet. NO flash cards in the cheat sheet.
 - `nav.pager` "← Back to all questions", a `footer`, then `<p class="signature">Sagarika</p>`.
 
 ## Visual rules
