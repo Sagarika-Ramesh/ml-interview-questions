@@ -93,6 +93,10 @@
       <figcaption>Delete a real extreme and the risk doesn't go away. <em>It just goes unseen.</em></figcaption>
     </figure>
 
+    <h3>Real? First check for a missing feature</h3>
+    <p>A "real" outlier is often just a point the model can't explain <em>yet</em>. A sales spike looks extreme until you add an <code>is_holiday</code> flag, and then it fits. So before reaching for robust methods, ask what would explain the point.</p>
+    <p>You can't always fix it that way, though. The feature may not be available at prediction time, there may be too few examples to learn from, and some events (fraud, one-off failures) are simply rare. Robust methods handle whatever the features still can't explain, so use both.</p>
+
     <div class="callout"><span class="hand" aria-hidden="true">👉</span><p>Sometimes the outliers <em>are</em> the task. In fraud or anomaly detection you don't make the model ignore them. You model them directly, for example with Isolation Forest or class weighting.</p></div>
   </section>
 
@@ -360,6 +364,7 @@ for name, m in {"OLS": ols, "Huber": huber}.items():
       <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">3.</span>Are tree models completely immune to outliers?</span></span><span class="face back"><span class="txt"><span class="bq">3. Are tree models completely immune to outliers?</span>No. They're robust to extreme <em>feature</em> values because splits only use the order. With squared loss, a leaf's prediction is still the mean of its targets, so an extreme y skews that leaf, and in boosting it creates large residuals that later trees chase. Use a Huber, MAE or quantile objective.</span></span></button>
       <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">4.</span>MAE is robust, so why isn't it always used?</span></span><span class="face back"><span class="txt"><span class="bq">4. MAE is robust, so why isn't it always used?</span>Its gradient has the same size whatever the error, so it doesn't slow down near the optimum and can oscillate. It isn't differentiable at zero, and it predicts the median, which is wrong if the business needs the mean (expected revenue, for example). Huber gives most of the robustness with smoother optimisation.</span></span></button>
       <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">5.</span>What's the difference between an outlier and a high-leverage point?</span></span><span class="face back"><span class="txt"><span class="bq">5. What's the difference between an outlier and a high-leverage point?</span>An outlier has an unusual <strong>y</strong> given its x. A high-leverage point has an unusual <strong>x</strong>. A point is <em>influential</em> when removing it changes the fit a lot, which usually takes both. Cook's distance measures that influence.</span></span></button>
+      <button class="flash flash-wide" type="button" aria-pressed="false"><span class="face front"><span class="txt"><span class="fn">6.</span>If an outlier is real, shouldn't you just add more features?</span></span><span class="face back"><span class="txt"><span class="bq">6. If an outlier is real, shouldn't you just add more features?</span>Check that first: a missing feature (a holiday, a customer segment) often explains an extreme point, and then it isn't an outlier any more. But the feature may not be available at prediction time, there may be too few examples to learn the pattern, and some events are simply rare. Robust losses and models cover what features can't explain, so a strong answer uses both.</span></span></button>
     </div>
   </section>
 
@@ -370,7 +375,7 @@ for name, m in {"OLS": ols, "Huber": huber}.items():
 
     <h3>Key steps</h3>
     <ol class="steps steps-v">
-      <li><span class="sn">1</span><b>Diagnose</b><span>Error or real rare event? Sort by value and look at the extreme rows.</span></li>
+      <li><span class="sn">1</span><b>Diagnose</b><span>Error or real rare event? Sort by value and look at the extreme rows. If it's real, check whether a missing feature explains it.</span></li>
       <li><span class="sn">2</span><b>Fix errors</b><span>Correct them or drop them. Keep real extremes.</span></li>
       <li><span class="sn">3</span><b>Tame features</b><span>Winsorize at 1%–99%, log / Box-Cox, <code>RobustScaler</code>. Fit all of it on the training split only.</span></li>
       <li><span class="sn">4</span><b>Swap the loss</b><span>Huber instead of mean squared error. MAE for the median, quantile loss for percentiles.</span></li>
