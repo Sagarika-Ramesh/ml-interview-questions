@@ -48,7 +48,8 @@ tools/figure_helpers.py            SVG helper functions for both figure styles (
   to check.", then `.flashes.flashes-wide` holding `button.flash.flash-wide` flip cards.
   Front: `<span class="fn">1.</span>` plus the question. Back: `<span class="bq">1. question</span>`
   plus the answer.
-- **Cheat sheet** (`#cheatsheet`), no box around it: just `ol.steps` (5 key steps). No mind map
+- **Cheat sheet** (`#cheatsheet`), no box around it: just `ol.steps.steps-v`: a vertical numbered list of key steps that covers EVERY area
+  on the page (e.g. data, loss, model, training/regularisation, evaluation), each with a short, concrete line. No mind map
   and no decision charts here. NO flash cards in the cheat sheet.
 - `nav.pager` "← Back to all questions", a `footer`, then `<p class="signature">Sagarika</p>`.
 

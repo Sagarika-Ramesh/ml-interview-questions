@@ -392,3 +392,12 @@ td.ex { min-width: 11rem; }
 .tbl-wide td:nth-child(4), .tbl-wide td:nth-child(5) { min-width: 14rem; }
 .tbl-wide td.ex { min-width: 15rem; }
 .tbl-wide table { font-size: 0.95rem; }
+
+/* Key steps, vertical at every width (7 steps don't fit side by side) */
+.steps.steps-v { grid-template-columns: 1fr; gap: 1rem; }
+.steps.steps-v li { grid-template-columns: 2.5rem 1fr; column-gap: 0.9rem; }
+.steps.steps-v .sn { grid-row: span 2; margin: 0; }
+.steps.steps-v li:not(:last-child)::after { top: 2.7rem; bottom: -1rem; left: 1.25rem; right: auto; border-top: 0; border-left: 2.5px dashed color-mix(in srgb, var(--accent) 55%, transparent); }
+.steps.steps-v b { font-size: 1.08rem; }
+.steps.steps-v span:last-child { font-size: 0.98rem; }
+.steps.steps-v span:last-child b { color: var(--fg); }
