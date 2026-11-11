@@ -143,3 +143,13 @@ if __name__ == "__main__":
             f'{tag_left(40,197,"DATA ERROR",CORAL)}{tag_left(408,197,"REAL RARE EVENT",TEAL)}'
             f'</svg>')
     print(demo)
+
+
+def leaf2(cx, y, title, sub, dot=TEAL):
+    """Answer chip with a second, smaller line underneath (e.g. 'Huber' / 'robust mean')."""
+    w = max(len(title) * 7.6, len(sub) * 6.9) + 40; x = cx - w / 2
+    return (f'<rect x="{x}" y="{y+4}" width="{w}" height="50" rx="9" fill="{SHADOW}"/>'
+            f'<rect x="{x}" y="{y}" width="{w}" height="50" rx="9" fill="{INK}"/>'
+            f'<circle cx="{x+16}" cy="{y+18}" r="5.5" fill="{dot}"/>'
+            f'<text class="chip-t" x="{x+28}" y="{y+22}" style="font-size:13px">{title}</text>'
+            f'<text x="{x+28}" y="{y+40}" style="font-size:11.5px;fill:#b9bfcc">{sub}</text>')
